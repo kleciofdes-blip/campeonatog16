@@ -453,6 +453,16 @@ const DADOS_VAZIOS = {
 let D = JSON.parse(JSON.stringify(DADOS_VAZIOS));
 let salvando = false;
 
+const TIMES_SEED = [
+  {nome:"Brasil", emoji:"🇧🇷", jogadores:[]},
+  {nome:"Argentina", emoji:"🇦🇷", jogadores:[]},
+  {nome:"Itália", emoji:"🇮🇹", jogadores:[]},
+  {nome:"Espanha", emoji:"🇪🇸", jogadores:[]},
+  {nome:"Inglaterra", emoji:"🏴󠁧󠁢󠁥󠁮󠁧󠁿", jogadores:[]},
+  {nome:"França", emoji:"🇫🇷", jogadores:[]},
+  {nome:"Alemanha", emoji:"🇩🇪", jogadores:[]}
+];
+
 const ATLETAS_SEED = [
   {nome:'KLECIO',pos:'GOL'},{nome:'ITALO SOUSA',pos:'GOL'},{nome:'JOSÉ PEREIRA - PMGO',pos:'GOL'},
   {nome:'CABAÑAS',pos:'GOL'},{nome:'FABRICIO',pos:'GOL'},{nome:'MARCOS DE QUEIROZ MONTEIRO',pos:'GOL'},
@@ -520,6 +530,10 @@ async function carregarDados() {
     if (!res.ok) throw new Error('Falha ao carregar');
     const json = await res.json();
     D = json.record || JSON.parse(JSON.stringify(DADOS_VAZIOS));
+    if (!D.times || D.times.length === 0) {
+      D.times = JSON.parse(JSON.stringify(TIMES_SEED));
+      await salvarDados(false);
+    }
     if (!D.atletas || D.atletas.length === 0) {
       D.atletas = [...ATLETAS_SEED];
       await salvarDados(false);
@@ -678,11 +692,41 @@ function rProx() {
   el.innerHTML=lista.map(p=>`<div class="jogo-card prox"><div class="jogo-header"><span class="jogo-rodada">Próximo Jogo</span><span class="jogo-data">${fmtData(p.data)}</span></div><div class="jogo-body"><div class="jogo-team">${p.casa}</div><div><div class="jogo-hora">${p.hora||'--:--'}</div><div class="jogo-vs">VS</div></div><div class="jogo-team right">${p.fora}</div></div>${p.local?`<div class="jogo-local">📍 ${p.local}</div>`:''}</div>`).join('');
 }
 
+const CORES_TIMES = {
+  'Brasil':    {bg:'rgba(0,156,59,0.15)',   borda:'#009c3b', texto:'#FFDF00'},
+  'Argentina': {bg:'rgba(116,172,223,0.15)',borda:'#74ACE0', texto:'#74ACE0'},
+  'Itália':    {bg:'rgba(0,70,127,0.15)',   borda:'#009246', texto:'#009246'},
+  'Espanha':   {bg:'rgba(198,11,30,0.15)',  borda:'#C60B1E', texto:'#FFC400'},
+  'Inglaterra':{bg:'rgba(200,16,46,0.15)',  borda:'#C8102E', texto:'#ffffff'},
+  'França':    {bg:'rgba(0,35,149,0.15)',   borda:'#002395', texto:'#ED2939'},
+  'Alemanha':  {bg:'rgba(0,0,0,0.3)',       borda:'#FFCE00', texto:'#FFCE00'},
+};
 function rTimes() {
   const el=document.getElementById('tTimes');
   const lista=D.times||[];
   if(!lista.length){el.innerHTML=empty('👥','Nenhum time');return;}
-  el.innerHTML=lista.map((t,i)=>`<div class="time-card" id="tc${i}"><div class="time-card-header" onclick="toggleTime(${i})"><div class="time-escudo">${t.emoji||'⚽'}</div><div><div class="time-nome-big">${t.nome}</div><div class="time-count">${(t.jogadores||[]).length} jogador(es)</div></div><div class="time-chevron">▼</div></div><div class="time-jogadores">${(t.jogadores||[]).length?t.jogadores.map(j=>`<div class="jogador-row"><span class="j-num">${j.num||'—'}</span><span class="j-nome">${j.nome}</span><span class="j-pos ${posCls(j.pos||'')}">${j.pos||''}</span></div>`).join(''):`<div style="padding:14px 16px;color:var(--texto);font-size:0.85rem">Nenhum jogador.</div>`}</div></div>`).join('');
+  el.innerHTML=lista.map((t,i)=>{
+    const cor=CORES_TIMES[t.nome]||{bg:'rgba(255,255,255,0.05)',borda:'#333',texto:'#fff'};
+    return `<div class="time-card" id="tc${i}" style="border-color:${cor.borda}">
+      <div class="time-card-header" onclick="toggleTime(${i})" style="background:${cor.bg}">
+        <div class="time-escudo" style="font-size:2rem;width:52px;height:52px;border:2px solid ${cor.borda}">${t.emoji||'⚽'}</div>
+        <div style="flex:1">
+          <div class="time-nome-big" style="color:${cor.texto};font-size:1.3rem;letter-spacing:2px">${t.nome.toUpperCase()}</div>
+          <div class="time-count">${(t.jogadores||[]).length} jogador(es)</div>
+        </div>
+        <div class="time-chevron" style="color:${cor.borda}">▼</div>
+      </div>
+      <div class="time-jogadores">
+        ${(t.jogadores||[]).length
+          ? t.jogadores.map(j=>`<div class="jogador-row">
+              <span class="j-num" style="color:${cor.texto}">${j.num||"—"}</span>
+              <span class="j-nome">${j.nome}</span>
+              <span class="j-pos ${posCls(j.pos||"")}">${j.pos||""}</span>
+            </div>`).join("")
+          : `<div style="padding:14px 16px;color:var(--texto);font-size:0.85rem;text-align:center">${t.emoji} Nenhum jogador cadastrado ainda.</div>`}
+      </div>
+    </div>`;
+  }).join('');
 }
 
 function toggleTime(i){document.getElementById('tc'+i).classList.toggle('open');}
