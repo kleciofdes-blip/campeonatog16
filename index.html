@@ -651,13 +651,145 @@ let D = JSON.parse(JSON.stringify(DADOS_VAZIOS));
 let salvando = false;
 
 const TIMES_SEED = [
-  {nome:"Brasil", emoji:"🇧🇷", jogadores:[]},
-  {nome:"Argentina", emoji:"🇦🇷", jogadores:[]},
-  {nome:"Itália", emoji:"🇮🇹", jogadores:[]},
-  {nome:"Espanha", emoji:"🇪🇸", jogadores:[]},
-  {nome:"Inglaterra", emoji:"🏴󠁧󠁢󠁥󠁮󠁧󠁿", jogadores:[]},
-  {nome:"França", emoji:"🇫🇷", jogadores:[]},
-  {nome:"Alemanha", emoji:"🇩🇪", jogadores:[]}
+  {nome:"Brasil", emoji:"🇧🇷", jogadores:[
+    {num:1,nome:"CARVALHO JR",pos:"ATA",foto:""},
+    {num:2,nome:"MARCOS DE QUEIROZ MONTEIRO",pos:"GOL",foto:""},
+    {num:3,nome:"WANDERSON",pos:"MEI",foto:""},
+    {num:4,nome:"RAFAEL GALEGO",pos:"ZAG",foto:""},
+    {num:5,nome:"M. FRANCISCO",pos:"ZAG",foto:""},
+    {num:6,nome:"LUIZ PEREIRA",pos:"ZAG",foto:""},
+    {num:7,nome:"EDMAR PEREIRA",pos:"ZAG",foto:""},
+    {num:8,nome:"LEANDRO MOREIRA",pos:"MEI",foto:""},
+    {num:9,nome:"NERIS",pos:"MEI",foto:""},
+    {num:10,nome:"GILSON",pos:"MEI",foto:""},
+    {num:11,nome:"FURTADO",pos:"MEI",foto:""},
+    {num:12,nome:"H. VINICIUS",pos:"MEI",foto:""},
+    {num:13,nome:"CARSIO JOZIVANIO MONTEIRO DE REZENDE",pos:"MEI",foto:""},
+    {num:14,nome:"MATHEUS DURAES (DURAES)",pos:"MEI",foto:""},
+    {num:15,nome:"AILTON (VIGILANTE)",pos:"MEI",foto:""},
+    {num:16,nome:"MAURINHO",pos:"ATA",foto:""},
+    {num:17,nome:"LUCAS DE ALBUQUERQUE SANTOS",pos:"ATA",foto:""},
+    {num:18,nome:"TEN MOREIRA",pos:"ATA",foto:""}
+  ]},
+  {nome:"Argentina", emoji:"🇦🇷", jogadores:[
+    {num:1,nome:"CLAUDINHO",pos:"ATA",foto:""},
+    {num:2,nome:"CABAÑAS",pos:"GOL",foto:""},
+    {num:3,nome:"DE ASSIS (CHICÃO)",pos:"GOL",foto:""},
+    {num:4,nome:"CUNHA",pos:"ZAG",foto:""},
+    {num:5,nome:"GUSTAVO PRAZERES",pos:"ZAG",foto:""},
+    {num:6,nome:"SALES",pos:"ZAG",foto:""},
+    {num:7,nome:"NAELSON CLARO BARBOSA",pos:"ZAG",foto:""},
+    {num:8,nome:"WILLIAM (NEY)",pos:"MEI",foto:""},
+    {num:9,nome:"PAULO GUILHERME",pos:"MEI",foto:""},
+    {num:10,nome:"ESTANISLAU",pos:"MEI",foto:""},
+    {num:11,nome:"HUDSON MONTEIRO",pos:"MEI",foto:""},
+    {num:12,nome:"VALMIR BATISTA DE LIMA",pos:"MEI",foto:""},
+    {num:13,nome:"SAMUEL PEREIRA MARTINS DOS SANTOS",pos:"MEI",foto:""},
+    {num:14,nome:"DUDU",pos:"MEI",foto:""},
+    {num:15,nome:"LAURO FERNANDES",pos:"MEI",foto:""},
+    {num:16,nome:"MAGAYVER",pos:"ATA",foto:""},
+    {num:17,nome:"PEDRO AUGUSTO CARNEIRO FILHO",pos:"ATA",foto:""},
+    {num:18,nome:"HUDSON EMIDIO SOBRINHO CAMARGOS",pos:"ATA",foto:""}
+  ]},
+  {nome:"Alemanha", emoji:"🇩🇪", jogadores:[
+    {num:1,nome:"LANGAMER",pos:"ZAG",foto:""},
+    {num:2,nome:"KLECIO",pos:"GOL",foto:""},
+    {num:3,nome:"TOPÓ",pos:"GOL",foto:""},
+    {num:4,nome:"MAICON DOUGLAS",pos:"ZAG",foto:""},
+    {num:5,nome:"BRUNO XAVIER",pos:"ZAG",foto:""},
+    {num:6,nome:"LELA",pos:"ZAG",foto:""},
+    {num:7,nome:"LUCAS MENDES",pos:"MEI",foto:""},
+    {num:8,nome:"LUAN SANTOS",pos:"MEI",foto:""},
+    {num:9,nome:"LEANDRO MOREIRA",pos:"MEI",foto:""},
+    {num:10,nome:"ANTONIO DE ALMEIDA MATOS JUNIOR",pos:"MEI",foto:""},
+    {num:11,nome:"PEDRO ARTHUR DE LIMA ALEXANDRE",pos:"MEI",foto:""},
+    {num:12,nome:"ENOKI",pos:"MEI",foto:""},
+    {num:13,nome:"BRANDÃO - PMGO",pos:"MEI",foto:""},
+    {num:14,nome:"EDUARDO ARAUJO",pos:"MEI",foto:""},
+    {num:15,nome:"PEDROSA",pos:"ATA",foto:""},
+    {num:16,nome:"JOWBERT",pos:"ATA",foto:""},
+    {num:17,nome:"RAFAEL MORAIS",pos:"ATA",foto:""},
+    {num:18,nome:"GARDIGOL",pos:"ATA",foto:""}
+  ]},
+  {nome:"Itália", emoji:"🇮🇹", jogadores:[
+    {num:1,nome:"MARCÃO",pos:"GOL",foto:""},
+    {num:2,nome:"JOSÉ PEREIRA - PMGO",pos:"GOL",foto:""},
+    {num:3,nome:"AUGÊNCIO",pos:"ZAG",foto:""},
+    {num:4,nome:"JONATHAN",pos:"ZAG",foto:""},
+    {num:5,nome:"ADRIEN",pos:"ZAG",foto:""},
+    {num:6,nome:"TARGINO",pos:"ZAG",foto:""},
+    {num:7,nome:"ZORD",pos:"MEI",foto:""},
+    {num:8,nome:"BEZERRA",pos:"MEI",foto:""},
+    {num:9,nome:"ANTÔNIO CARLOS",pos:"MEI",foto:""},
+    {num:10,nome:"LUCAS DA SILVA FERREIRA",pos:"MEI",foto:""},
+    {num:11,nome:"LEONINO EUROPEU",pos:"MEI",foto:""},
+    {num:12,nome:"RONALDINHO",pos:"MEI",foto:""},
+    {num:13,nome:"RODRIGUINHO",pos:"MEI",foto:""},
+    {num:14,nome:"WAGNER DE LIMA",pos:"MEI",foto:""},
+    {num:15,nome:"ALISSON DEMI",pos:"ATA",foto:""},
+    {num:16,nome:"MASSA",pos:"ATA",foto:""},
+    {num:17,nome:"WALLYSON DA SILVA ANDRÉ",pos:"ATA",foto:""},
+    {num:18,nome:"ABEL",pos:"ATA",foto:""}
+  ]},
+  {nome:"França", emoji:"🇫🇷", jogadores:[
+    {num:1,nome:"VINICIUS",pos:"MEI",foto:""},
+    {num:2,nome:"ITALO SOUSA",pos:"GOL",foto:""},
+    {num:3,nome:"ANDRADE",pos:"GOL",foto:""},
+    {num:4,nome:"IGOR JOSÉ",pos:"ZAG",foto:""},
+    {num:5,nome:"ANDRÉ SILVA",pos:"ZAG",foto:""},
+    {num:6,nome:"BRITO (TEN)",pos:"ZAG",foto:""},
+    {num:7,nome:"LINO",pos:"ZAG",foto:""},
+    {num:8,nome:"LUCAS DA SILVA FERREIRA",pos:"MEI",foto:""},
+    {num:9,nome:"RODRIGO CASSIMIRO",pos:"MEI",foto:""},
+    {num:10,nome:"DIEGO MORAIS DE ANDRADE",pos:"MEI",foto:""},
+    {num:11,nome:"LUCAS EUROPEU",pos:"MEI",foto:""},
+    {num:12,nome:"WESLEI (ESQ)",pos:"MEI",foto:""},
+    {num:13,nome:"WILLIAM LUCIO",pos:"MEI",foto:""},
+    {num:14,nome:"EULER DAVI",pos:"MEI",foto:""},
+    {num:15,nome:"MACACO ALUCINADO",pos:"ATA",foto:""},
+    {num:16,nome:"KELL",pos:"ATA",foto:""},
+    {num:17,nome:"EVANDRO",pos:"ATA",foto:""},
+    {num:18,nome:"TEN MOREIRA",pos:"ATA",foto:""}
+  ]},
+  {nome:"Inglaterra", emoji:"🏴󠁧󠁢󠁥󠁮󠁧󠁿", jogadores:[
+    {num:1,nome:"ULISSES",pos:"MEI",foto:""},
+    {num:2,nome:"FABRICIO",pos:"GOL",foto:""},
+    {num:3,nome:"ERONILDES",pos:"ATA",foto:""},
+    {num:4,nome:"DEILER",pos:"ZAG",foto:""},
+    {num:5,nome:"GERUSIO",pos:"ZAG",foto:""},
+    {num:6,nome:"WAGNER TINEL",pos:"ZAG",foto:""},
+    {num:7,nome:"JOSÉ MENDES",pos:"ZAG",foto:""},
+    {num:8,nome:"DANIEL GONÇALVES",pos:"MEI",foto:""},
+    {num:9,nome:"W. PEIXOTO",pos:"MEI",foto:""},
+    {num:10,nome:"LEONARDO",pos:"MEI",foto:""},
+    {num:11,nome:"GEO BALADA",pos:"MEI",foto:""},
+    {num:12,nome:"BETO",pos:"MEI",foto:""},
+    {num:13,nome:"MATHEUS KERSUL LIMA",pos:"MEI",foto:""},
+    {num:14,nome:"ROBERTO CARDOSO",pos:"ATA",foto:""},
+    {num:15,nome:"JEFÃO",pos:"ATA",foto:""},
+    {num:16,nome:"FERNANDO COSER",pos:"ATA",foto:""},
+    {num:17,nome:"FIDEL",pos:"ATA",foto:""}
+  ]},
+  {nome:"Espanha", emoji:"🇪🇸", jogadores:[
+    {num:1,nome:"RICARDO",pos:"ZAG",foto:""},
+    {num:2,nome:"FLÁVIO",pos:"GOL",foto:""},
+    {num:3,nome:"LORIN",pos:"GOL",foto:""},
+    {num:4,nome:"LEANDRÃO",pos:"ZAG",foto:""},
+    {num:5,nome:"EDMILSON LEITE RANGEL",pos:"ATA",foto:""},
+    {num:6,nome:"GREISON",pos:"ZAG",foto:""},
+    {num:7,nome:"GUILHERME BRYAN OLIVEIRA DO CARMO",pos:"MEI",foto:""},
+    {num:8,nome:"MATHEUS PEREIRA",pos:"MEI",foto:""},
+    {num:9,nome:"EDSON (IRMÃO EDILSON)",pos:"MEI",foto:""},
+    {num:10,nome:"SERRANO",pos:"MEI",foto:""},
+    {num:11,nome:"MATHEUS I.",pos:"MEI",foto:""},
+    {num:12,nome:"FRANCISCO GOMES DA SILVEIRA",pos:"MEI",foto:""},
+    {num:13,nome:"WESCLEY",pos:"MEI",foto:""},
+    {num:14,nome:"TEN MOREIRA",pos:"ATA",foto:""},
+    {num:15,nome:"JÂNIO",pos:"ATA",foto:""},
+    {num:16,nome:"EDILSON",pos:"ATA",foto:""},
+    {num:17,nome:"THIAGO MARTINS",pos:"ATA",foto:""},
+    {num:18,nome:"ABEL",pos:"ATA",foto:""}
+  ]},
 ];
 
 const ATLETAS_SEED = [
@@ -740,6 +872,23 @@ async function carregarDados() {
     if (!D.times || D.times.length === 0) {
       D.times = JSON.parse(JSON.stringify(TIMES_SEED));
       await salvarDados(false);
+    } else {
+      // Merge emoji + jogadores do seed em times já existentes no banco
+      let mudou = false;
+      TIMES_SEED.forEach(seed => {
+        const t = D.times.find(x => x.nome === seed.nome);
+        if (t) {
+          if (!t.emoji && seed.emoji) { t.emoji = seed.emoji; mudou = true; }
+          seed.jogadores.forEach(sj => {
+            if (!t.jogadores) t.jogadores = [];
+            if (!t.jogadores.find(j => j.nome === sj.nome)) {
+              t.jogadores.push({...sj});
+              mudou = true;
+            }
+          });
+        }
+      });
+      if (mudou) await salvarDados(false);
     }
     if (!D.atletas || D.atletas.length === 0) {
       D.atletas = [...ATLETAS_SEED];
@@ -1008,9 +1157,13 @@ function rArtilh() {
   }).join('');
 }
 
+const EMOJI_FALLBACK = {
+  'Brasil':'🇧🇷','Argentina':'🇦🇷','Itália':'🇮🇹','Espanha':'🇪🇸',
+  'Inglaterra':'🏴󠁧󠁢󠁥󠁮󠁧󠁿','França':'🇫🇷','Alemanha':'🇩🇪'
+};
 function getTimeEmoji(nome) {
   const t = (D.times||[]).find(t => t.nome === nome);
-  return t?.emoji || '⚽';
+  return (t?.emoji) || EMOJI_FALLBACK[nome] || '⚽';
 }
 
 function rResult() {
