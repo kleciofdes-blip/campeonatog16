@@ -218,6 +218,13 @@ html,body{height:100%;background:var(--preto);color:var(--branco);font-family:'B
 .senha-input{width:100%;background:var(--borda2);border:1px solid var(--borda);border-radius:14px;color:var(--branco);padding:16px;font-size:1.2rem;text-align:center;letter-spacing:6px;margin-bottom:12px;}
 .senha-input:focus{outline:none;border-color:var(--verde);}
 .erro-msg{color:#ef5350;font-size:0.82rem;margin-top:8px;display:none;}
+
+/* AUTOCOMPLETE */
+.autocomplete-list{position:absolute;left:0;right:0;background:#222;border:1px solid var(--verde);border-radius:0 0 10px 10px;z-index:1000;max-height:180px;overflow-y:auto;display:none;}
+.autocomplete-list.show{display:block;}
+.autocomplete-item{padding:10px 14px;font-size:0.9rem;cursor:pointer;border-bottom:1px solid var(--borda);}
+.autocomplete-item:hover{background:var(--verde-dim);color:var(--verde);}
+.autocomplete-item:last-child{border-bottom:none;}
 </style>
 </head>
 <body>
@@ -363,8 +370,16 @@ html,body{height:100%;background:var(--preto);color:var(--branco);font-family:'B
       </div>
       <div class="a-section" id="at-artilh">
         <p class="sub-label">Adicionar Artilheiro</p>
-        <div class="fg"><label>Jogador</label><input id="ar_nome" placeholder="Nome do jogador"></div>
-        <div class="fg"><label>Time</label><input id="ar_time" placeholder="Nome do time"></div>
+        <div class="fg" style="position:relative">
+          <label>Jogador</label>
+          <input id="ar_nome" placeholder="Digite o nome..." autocomplete="off" oninput="sugerirAtleta('ar_nome','ar_sug')">
+          <div id="ar_sug" class="autocomplete-list"></div>
+        </div>
+        <div class="fg" style="position:relative">
+          <label>Time</label>
+          <input id="ar_time" placeholder="Digite o time..." autocomplete="off" oninput="sugerirTime('ar_time','ar_tsug')">
+          <div id="ar_tsug" class="autocomplete-list"></div>
+        </div>
         <div class="fg"><label>Gols</label><input id="ar_gols" type="number" min="0" value="1" inputmode="numeric"></div>
         <button class="btn-add" onclick="addArtilh()">+ ADICIONAR</button>
         <hr class="divider"><p class="sub-label">Artilheiros</p><div id="lArtilh"></div>
@@ -821,7 +836,17 @@ function renderAdmin(){
     ?(D.prox).map((p,i)=>`<div class="item-row"><div class="item-row-text"><b>${p.casa} vs ${p.fora}</b><small>${fmtData(p.data)} ${p.hora||''} ${p.local?'— '+p.local:''}</small></div><button class="btn-del" onclick="delProx(${i})">✕</button></div>`).join('')
     :'<p style="color:var(--texto);font-size:0.82rem">Nenhum.</p>';
   document.getElementById('lTimes').innerHTML=(D.times||[]).length
-    ?(D.times).map((t,ti)=>`<div class="time-block"><div class="time-block-head"><span class="time-block-nome">${t.emoji||'⚽'} ${t.nome}</span><button class="btn-del" onclick="delTime(${ti})">✕</button></div><div class="time-block-body">${(t.jogadores||[]).map((j,ji)=>`<div class="jog-mini"><span style="color:var(--verde);font-family:'Bebas Neue';font-size:1rem;width:24px">${j.num||'#'}</span><span style="flex:1;font-size:0.85rem">${j.nome}</span><span style="color:var(--texto);font-size:0.75rem;margin-right:6px">${j.pos||''}</span><button class="btn-del" style="width:28px;height:28px;font-size:0.8rem" onclick="delJog(${ti},${ji})">✕</button></div>`).join('')}<div class="add-jog-form"><input id="jn${ti}" placeholder="#" inputmode="numeric"><input id="jm${ti}" placeholder="Nome"><input id="jp${ti}" placeholder="Pos"><button class="btn-jog-add" onclick="addJog(${ti})">+</button></div></div></div>`).join('')
+    ?(D.times).map((t,ti)=>`<div class="time-block"><div class="time-block-head"><span class="time-block-nome">${t.emoji||'⚽'} ${t.nome}</span><button class="btn-del" onclick="delTime(${ti})">✕</button></div><div class="time-block-body">${(t.jogadores||[]).map((j,ji)=>`<div class="jog-mini"><span style="color:var(--verde);font-family:'Bebas Neue';font-size:1rem;width:24px">${j.num||'#'}</span><span style="flex:1;font-size:0.85rem">${j.nome}</span><span style="color:var(--texto);font-size:0.75rem;margin-right:6px">${j.pos||''}</span><button class="btn-del" style="width:28px;height:28px;font-size:0.8rem" onclick="delJog(${ti},${ji})">✕</button></div>`).join('')}<div style="margin-top:10px">
+  <div style="display:grid;grid-template-columns:50px 1fr 65px 40px;gap:6px;position:relative">
+    <input id="jn${ti}" placeholder="#" inputmode="numeric" style="background:var(--card);border:1px solid var(--borda);border-radius:8px;color:var(--branco);padding:10px 8px;font-size:0.88rem;font-family:Barlow,sans-serif">
+    <div style="position:relative">
+      <input id="jm${ti}" placeholder="Nome do atleta" autocomplete="off" oninput="sugerirJogadorTime('jm${ti}','jsug${ti}')" style="width:100%;background:var(--card);border:1px solid var(--borda);border-radius:8px;color:var(--branco);padding:10px 8px;font-size:0.88rem;font-family:Barlow,sans-serif">
+      <div id="jsug${ti}" class="autocomplete-list"></div>
+    </div>
+    <input id="jp${ti}" placeholder="Pos" style="background:var(--card);border:1px solid var(--borda);border-radius:8px;color:var(--branco);padding:10px 8px;font-size:0.88rem;font-family:Barlow,sans-serif">
+    <button class="btn-jog-add" onclick="addJog(${ti})">+</button>
+  </div>
+</div></div></div>`).join('')
     :'<p style="color:var(--texto);font-size:0.82rem">Nenhum time.</p>';
   const total=( D.atletas||[]).length;
   document.getElementById('totalAtletas').textContent=total;
@@ -844,6 +869,66 @@ const v=id=>document.getElementById(id)?.value?.trim()||'';
 const n=id=>parseInt(document.getElementById(id)?.value)||0;
 function clearFields(ids){ids.forEach(id=>{const el=document.getElementById(id);if(el)el.value=el.type==='number'?'0':'';}); }
 function fmtData(d){if(!d)return'';const[y,m,day]=d.split('-');return day&&m&&y?`${day}/${m}/${y}`:''; }
+
+
+// ── AUTOCOMPLETE ──
+function sugerirAtleta(inputId, listId) {
+  const val = document.getElementById(inputId).value.toLowerCase().trim();
+  const lista = document.getElementById(listId);
+  if (!val || val.length < 2) { lista.classList.remove('show'); return; }
+  const matches = (D.atletas||[]).filter(a => a.nome.toLowerCase().includes(val)).slice(0,8);
+  if (!matches.length) { lista.classList.remove('show'); return; }
+  lista.innerHTML = matches.map(a => 
+    `<div class="autocomplete-item" onclick="selecionarAtleta('${inputId}','${listId}','${a.nome.replace(/'/g,"\'")}')">
+      <span class="j-pos ${a.pos==='GOL'?'pos-gol':a.pos==='ZAG'?'pos-zag':a.pos==='MEI'?'pos-mei':'pos-ata'}" style="font-size:0.65rem;padding:2px 6px;margin-right:6px">${a.pos}</span>${a.nome}
+    </div>`
+  ).join('');
+  lista.classList.add('show');
+}
+function selecionarAtleta(inputId, listId, nome) {
+  document.getElementById(inputId).value = nome;
+  document.getElementById(listId).classList.remove('show');
+}
+function sugerirTime(inputId, listId) {
+  const val = document.getElementById(inputId).value.toLowerCase().trim();
+  const lista = document.getElementById(listId);
+  if (!val || val.length < 1) { lista.classList.remove('show'); return; }
+  const matches = (D.times||[]).filter(t => t.nome.toLowerCase().includes(val)).slice(0,7);
+  if (!matches.length) { lista.classList.remove('show'); return; }
+  lista.innerHTML = matches.map(t => 
+    `<div class="autocomplete-item" onclick="selecionarAtleta('${inputId}','${listId}','${t.nome.replace(/'/g,"\'")}')">
+      ${t.emoji||'⚽'} ${t.nome}
+    </div>`
+  ).join('');
+  lista.classList.add('show');
+}
+function sugerirJogadorTime(inputId, listId) {
+  const val = document.getElementById(inputId).value.toLowerCase().trim();
+  const lista = document.getElementById(listId);
+  if (!val || val.length < 2) { lista.classList.remove('show'); return; }
+  const matches = (D.atletas||[]).filter(a => a.nome.toLowerCase().includes(val)).slice(0,8);
+  if (!matches.length) { lista.classList.remove('show'); return; }
+  lista.innerHTML = matches.map(a => 
+    `<div class="autocomplete-item" onclick="selecionarJogadorTime('${inputId}','${listId}','${a.nome.replace(/'/g,"\'")}','${a.pos}')">
+      <span class="j-pos ${a.pos==='GOL'?'pos-gol':a.pos==='ZAG'?'pos-zag':a.pos==='MEI'?'pos-mei':'pos-ata'}" style="font-size:0.65rem;padding:2px 6px;margin-right:6px">${a.pos}</span>${a.nome}
+    </div>`
+  ).join('');
+  lista.classList.add('show');
+}
+function selecionarJogadorTime(inputId, listId, nome, pos) {
+  document.getElementById(inputId).value = nome;
+  document.getElementById(listId).classList.remove('show');
+  // preenche posição automaticamente
+  const baseId = inputId.replace('jm','jp');
+  const posEl = document.getElementById(baseId);
+  if (posEl) posEl.value = pos;
+}
+// Fechar autocomplete ao clicar fora
+document.addEventListener('click', e => {
+  if (!e.target.closest('.fg')) {
+    document.querySelectorAll('.autocomplete-list').forEach(l => l.classList.remove('show'));
+  }
+});
 
 // ── START ──
 carregarDados();
