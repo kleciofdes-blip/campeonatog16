@@ -298,6 +298,47 @@ html,body{height:100%;background:var(--preto);color:var(--branco);font-family:'B
 .foto-upload-circle img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
 .jogador-row-foto{width:36px;height:36px;border-radius:50%;background:var(--borda2);border:2px solid var(--borda);display:flex;align-items:center;justify-content:center;font-size:1rem;overflow:hidden;flex-shrink:0;}
 .jogador-row-foto img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+
+/* TIME PICKER */
+.time-picker-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;}
+.time-picker-btn{background:var(--card);border:2px solid var(--borda);border-radius:12px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;transition:all 0.18s;-webkit-tap-highlight-color:transparent;}
+.time-picker-btn:active{transform:scale(0.94);}
+.time-picker-btn.sel-casa{border-color:#4fc3f7;background:rgba(79,195,247,0.1);}
+.time-picker-btn.sel-fora{border-color:#f06292;background:rgba(240,98,146,0.1);}
+.time-picker-btn.sel-casa .tpb-nome{color:#4fc3f7;}
+.time-picker-btn.sel-fora .tpb-nome{color:#f06292;}
+.tpb-emoji{font-size:1.5rem;line-height:1;}
+.tpb-nome{font-family:'Barlow Condensed',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:0.5px;text-align:center;color:var(--branco);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%;}
+.times-selecionados{display:flex;align-items:center;gap:8px;background:var(--borda2);border-radius:12px;padding:10px 14px;margin-top:4px;}
+.time-sel-slot{flex:1;text-align:center;font-family:'Barlow Condensed',sans-serif;font-size:0.88rem;font-weight:700;padding:8px;border-radius:8px;min-height:36px;display:flex;align-items:center;justify-content:center;}
+.time-sel-slot.vazio{color:var(--texto);background:var(--card);}
+.time-sel-slot.casa{background:rgba(79,195,247,0.15);color:#4fc3f7;border:1px solid rgba(79,195,247,0.3);}
+.time-sel-slot.fora{background:rgba(240,98,146,0.15);color:#f06292;border:1px solid rgba(240,98,146,0.3);}
+.vs-badge{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:2px;color:var(--texto);flex-shrink:0;}
+
+/* MODAL RESULTADO JOGO */
+.gol-item{display:flex;align-items:center;gap:8px;background:var(--card);border-radius:10px;padding:10px 12px;margin-bottom:6px;}
+.gol-item-foto{width:34px;height:34px;border-radius:50%;background:var(--borda2);display:flex;align-items:center;justify-content:center;font-size:0.9rem;overflow:hidden;flex-shrink:0;}
+.gol-item-foto img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+.gol-item-nome{flex:1;font-size:0.85rem;font-weight:600;}
+.gol-item-time{font-size:0.72rem;color:var(--texto);}
+.gol-qty{display:flex;align-items:center;gap:6px;}
+.gol-qty-btn{width:28px;height:28px;border-radius:8px;border:none;background:var(--borda2);color:var(--branco);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700;}
+.gol-qty-btn:active{background:var(--verde-dim);color:var(--verde);}
+.gol-qty-num{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;color:var(--verde);min-width:20px;text-align:center;}
+.placar-display{display:flex;align-items:center;justify-content:center;gap:12px;background:var(--borda2);border-radius:14px;padding:14px;margin-bottom:16px;}
+.placar-time{flex:1;text-align:center;}
+.placar-time-nome{font-family:'Barlow Condensed',sans-serif;font-size:0.8rem;color:var(--texto);margin-bottom:4px;}
+.placar-time-emoji{font-size:1.6rem;}
+.placar-gols{display:flex;align-items:center;gap:10px;}
+.placar-gols-btn{width:36px;height:36px;border-radius:10px;border:none;background:var(--card);color:var(--branco);font-size:1.3rem;cursor:pointer;font-weight:700;}
+.placar-gols-btn:active{background:var(--verde-dim);color:var(--verde);}
+.placar-gols-num{font-family:'Bebas Neue',sans-serif;font-size:2.4rem;color:var(--branco);min-width:32px;text-align:center;line-height:1;}
+.placar-vs{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:2px;color:var(--texto);}
+.artilheiros-section{margin-top:4px;}
+.artilheiros-busca{position:relative;margin-bottom:10px;}
+.jogador-sug{position:fixed;background:#1e1e1e;border:1px solid var(--verde);border-radius:12px;z-index:9999;display:none;max-height:220px;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,0.8);}
+.jogador-sug.open{display:block;}
 </style>
 </head>
 <body>
@@ -467,11 +508,20 @@ html,body{height:100%;background:var(--preto);color:var(--branco);font-family:'B
       </div>
       <div class="a-section" id="at-result">
         <p class="sub-label">Adicionar Resultado</p>
-        <div class="grid2">
-          <div class="fg"><label>Time Casa</label><input id="re_casa" placeholder="Casa"></div>
-          <div class="fg"><label>Time Fora</label><input id="re_fora" placeholder="Fora"></div>
+
+        <p style="font-family:'Barlow Condensed';font-size:0.72rem;letter-spacing:2px;color:var(--texto);text-transform:uppercase;margin-bottom:8px">Selecionar Times</p>
+        <div class="time-picker-grid" id="re_times_grid">
+          <div style="color:var(--texto);font-size:0.8rem;text-align:center;padding:10px">Nenhum time cadastrado</div>
         </div>
-        <div class="grid2">
+        <input type="hidden" id="re_casa">
+        <input type="hidden" id="re_fora">
+        <div class="times-selecionados" id="re_selecionados">
+          <div class="time-sel-slot vazio" id="re_slot_casa">🏠 Casa</div>
+          <div class="vs-badge">VS</div>
+          <div class="time-sel-slot vazio" id="re_slot_fora">✈️ Fora</div>
+        </div>
+
+        <div class="grid2" style="margin-top:12px">
           <div class="fg"><label>Placar Casa</label><input id="re_gc" type="number" min="0" value="0" inputmode="numeric"></div>
           <div class="fg"><label>Placar Fora</label><input id="re_gf" type="number" min="0" value="0" inputmode="numeric"></div>
         </div>
@@ -484,11 +534,20 @@ html,body{height:100%;background:var(--preto);color:var(--branco);font-family:'B
       </div>
       <div class="a-section" id="at-prox">
         <p class="sub-label">Agendar Jogo</p>
-        <div class="grid2">
-          <div class="fg"><label>Time Casa</label><input id="px_casa" placeholder="Casa"></div>
-          <div class="fg"><label>Time Fora</label><input id="px_fora" placeholder="Fora"></div>
+
+        <p style="font-family:'Barlow Condensed';font-size:0.72rem;letter-spacing:2px;color:var(--texto);text-transform:uppercase;margin-bottom:8px">Selecionar Times</p>
+        <div class="time-picker-grid" id="px_times_grid">
+          <div style="color:var(--texto);font-size:0.8rem;text-align:center;padding:10px">Nenhum time cadastrado</div>
         </div>
-        <div class="grid2">
+        <input type="hidden" id="px_casa">
+        <input type="hidden" id="px_fora">
+        <div class="times-selecionados" id="px_selecionados">
+          <div class="time-sel-slot vazio" id="px_slot_casa">🏠 Casa</div>
+          <div class="vs-badge">VS</div>
+          <div class="time-sel-slot vazio" id="px_slot_fora">✈️ Fora</div>
+        </div>
+
+        <div class="grid2" style="margin-top:12px">
           <div class="fg"><label>Data</label><input id="px_data" type="date"></div>
           <div class="fg"><label>Horário</label><input id="px_hora" type="time"></div>
         </div>
@@ -733,6 +792,8 @@ function mudarATab(id,el) {
   document.querySelectorAll('.a-tab').forEach(t => t.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   el.classList.add('active');
+  if (id === 'at-result') renderTimePicker('re_times_grid','re');
+  if (id === 'at-prox')   renderTimePicker('px_times_grid','px');
 }
 
 // ── SENHA ──
@@ -819,12 +880,74 @@ function renderAll() { rClassif(); rArtilh(); rResult(); rProx(); rTimes(); filt
 
 function rClassif() {
   const tb = document.getElementById('tClassif');
-  const lista = [...(D.classif||[])].map(t=>({...t,pj:(t.v||0)+(t.e||0)+(t.d||0),pts:(t.v||0)*3+(t.e||0)+(t.pe||0),sg:(t.gp||0)-(t.gc||0)})).sort((a,b)=>b.pts-a.pts||b.sg-a.sg||b.gp-a.gp);
-  if (!lista.length){tb.innerHTML=`<tr><td colspan="8" style="text-align:center;padding:28px;color:var(--texto)">Nenhum time cadastrado</td></tr>`;return;}
-  tb.innerHTML=lista.map((t,i)=>{
-    const p=i+1,cls=p===1?'p1':p===2?'p2':p===3?'p3':'pn';
-    const sg=t.sg>0?`<span class="sg-pos">+${t.sg}</span>`:t.sg<0?`<span class="sg-neg">${t.sg}</span>`:`<span style="color:var(--texto)">0</span>`;
-    return `<tr><td><span class="pos-num ${cls}">${p}</span></td><td><div class="time-cell"><span>${t.emoji||'⚽'}</span><span class="time-n">${t.nome}</span></div></td><td style="color:var(--texto)">${t.pj}</td><td style="color:#69f0ae">${t.v||0}</td><td style="color:var(--texto)">${t.e||0}</td><td style="color:#ef5350">${t.d||0}</td><td>${sg}</td><td class="pts-cell">${t.pts}</td></tr>`;
+
+  // Pega todos os times cadastrados (classif + times)
+  const nomes = new Set();
+  (D.classif||[]).forEach(t => nomes.add(t.nome));
+  (D.times||[]).forEach(t => nomes.add(t.nome));
+
+  // Monta mapa base com emoji e pe
+  const mapa = {};
+  nomes.forEach(nome => {
+    const cBase = (D.classif||[]).find(t=>t.nome===nome) || {};
+    const tCad  = (D.times||[]).find(t=>t.nome===nome)   || {};
+    mapa[nome] = {
+      nome,
+      emoji: cBase.emoji || tCad.emoji || '⚽',
+      v:0, e:0, d:0, gp:0, gc:0,
+      pe: cBase.pe || 0
+    };
+  });
+
+  // Recalcula tudo a partir dos resultados
+  (D.result||[]).forEach(r => {
+    const gc = parseInt(r.gc)||0;
+    const gf = parseInt(r.gf)||0;
+    if (!mapa[r.casa]) {
+      const tCad = (D.times||[]).find(t=>t.nome===r.casa)||{};
+      mapa[r.casa] = {nome:r.casa, emoji:tCad.emoji||'⚽', v:0,e:0,d:0,gp:0,gc:0,pe:0};
+    }
+    if (!mapa[r.fora]) {
+      const tCad = (D.times||[]).find(t=>t.nome===r.fora)||{};
+      mapa[r.fora] = {nome:r.fora, emoji:tCad.emoji||'⚽', v:0,e:0,d:0,gp:0,gc:0,pe:0};
+    }
+    mapa[r.casa].gp += gc; mapa[r.casa].gc += gf;
+    mapa[r.fora].gp  += gf; mapa[r.fora].gc  += gc;
+    if (gc > gf)      { mapa[r.casa].v++; mapa[r.fora].d++; }
+    else if (gc < gf) { mapa[r.fora].v++;  mapa[r.casa].d++; }
+    else              { mapa[r.casa].e++; mapa[r.fora].e++;  }
+  });
+
+  // Só mostra times que jogaram ou estão na classif manual
+  const lista = Object.values(mapa)
+    .filter(t => (t.v+t.e+t.d) > 0 || (D.classif||[]).find(c=>c.nome===t.nome))
+    .map(t => ({
+      ...t,
+      pj:  t.v + t.e + t.d,
+      sg:  t.gp - t.gc,
+      pts: t.v*3 + t.e + (t.pe||0)
+    }))
+    .sort((a,b) => b.pts-a.pts || b.sg-a.sg || b.gp-a.gp || a.nome.localeCompare(b.nome));
+
+  if (!lista.length){
+    tb.innerHTML=`<tr><td colspan="8" style="text-align:center;padding:28px;color:var(--texto)">Nenhum time cadastrado</td></tr>`;
+    return;
+  }
+  tb.innerHTML = lista.map((t,i) => {
+    const p=i+1, cls=p===1?'p1':p===2?'p2':p===3?'p3':'pn';
+    const sg = t.sg>0 ? `<span class="sg-pos">+${t.sg}</span>`
+             : t.sg<0 ? `<span class="sg-neg">${t.sg}</span>`
+             : `<span style="color:var(--texto)">0</span>`;
+    return `<tr>
+      <td><span class="pos-num ${cls}">${p}</span></td>
+      <td><div class="time-cell"><span>${t.emoji||'⚽'}</span><span class="time-n">${t.nome}</span></div></td>
+      <td style="color:var(--texto)">${t.pj}</td>
+      <td style="color:#69f0ae">${t.v}</td>
+      <td style="color:var(--texto)">${t.e}</td>
+      <td style="color:#ef5350">${t.d}</td>
+      <td>${sg}</td>
+      <td class="pts-cell">${t.pts}</td>
+    </tr>`;
   }).join('');
 }
 
@@ -918,9 +1041,13 @@ async function delArtilh(i){D.artilh.splice(i,1);await salvarDados();renderAll()
 async function addResult(){
   const casa=v('re_casa'),fora=v('re_fora');if(!casa||!fora)return alert('Preencha os times!');
   if(!D.result)D.result=[];
-  D.result.push({casa,fora,gc:n('re_gc'),gf:n('re_gf'),data:v('re_data'),rod:v('re_rod')});
+  const gc=n('re_gc'), gf=n('re_gf');
+  D.result.push({casa,fora,gc,gf,data:v('re_data'),rod:v('re_rod')});
+  atualizarClassifComResultado(casa, fora, gc, gf);
   await salvarDados();renderAll();renderAdmin();
-  clearFields(['re_casa','re_fora','re_gc','re_gf','re_data','re_rod']);
+  clearFields(['re_gc','re_gf','re_data','re_rod']);
+  limparTimePicker('re');
+  renderTimePicker('re_times_grid','re');
 }
 async function delResult(i){D.result.splice(i,1);await salvarDados();renderAll();renderAdmin();}
 
@@ -929,7 +1056,9 @@ async function addProx(){
   if(!D.prox)D.prox=[];
   D.prox.push({casa,fora,data:v('px_data'),hora:v('px_hora'),local:v('px_local')});
   await salvarDados();renderAll();renderAdmin();
-  clearFields(['px_casa','px_fora','px_data','px_hora','px_local']);
+  clearFields(['px_data','px_hora','px_local']);
+  limparTimePicker('px');
+  renderTimePicker('px_times_grid','px');
 }
 async function delProx(i){D.prox.splice(i,1);await salvarDados();renderAll();renderAdmin();}
 
@@ -971,7 +1100,14 @@ function renderAdmin(){
     ?[...D.result].reverse().map((r,_)=>{const i=D.result.indexOf(r);return`<div class="item-row"><div class="item-row-text"><b>${r.casa} ${r.gc}×${r.gf} ${r.fora}</b><small>${fmtData(r.data)} ${r.rod||''}</small></div><button class="btn-del" onclick="delResult(${i})">✕</button></div>`;}).join('')
     :'<p style="color:var(--texto);font-size:0.82rem">Nenhum.</p>';
   document.getElementById('lProx').innerHTML=(D.prox||[]).length
-    ?(D.prox).map((p,i)=>`<div class="item-row"><div class="item-row-text"><b>${p.casa} vs ${p.fora}</b><small>${fmtData(p.data)} ${p.hora||''} ${p.local?'— '+p.local:''}</small></div><button class="btn-del" onclick="delProx(${i})">✕</button></div>`).join('')
+    ?(D.prox).map((p,i)=>`<div class="item-row" style="flex-wrap:wrap;gap:8px">
+      <div class="item-row-text">
+        <b>${p.casa} vs ${p.fora}</b>
+        <small>${fmtData(p.data)} ${p.hora||''} ${p.local?'— '+p.local:''}</small>
+      </div>
+      <button onclick="abrirEncerrarJogo(${i})" style="background:var(--verde);border:none;color:#000;border-radius:8px;padding:6px 12px;font-family:'Barlow Condensed',sans-serif;font-size:0.8rem;font-weight:700;cursor:pointer;letter-spacing:1px;white-space:nowrap">⚽ ENCERRAR</button>
+      <button class="btn-del" onclick="delProx(${i})">✕</button>
+    </div>`).join('')
     :'<p style="color:var(--texto);font-size:0.82rem">Nenhum.</p>';
   document.getElementById('lTimes').innerHTML=(D.times||[]).length
     ?(D.times).map((t,ti)=>{
@@ -1346,6 +1482,294 @@ document.addEventListener('click', e => {
   const mj = document.getElementById('editJogModal');
   if (mj && e.target === mj) fecharEditJog();
 });
+
+// ── TIME PICKER ──
+function renderTimePicker(gridId, prefix) {
+  const grid = document.getElementById(gridId);
+  if (!grid) return;
+  const times = D.times || [];
+  if (!times.length) {
+    grid.innerHTML = '<div style="color:var(--texto);font-size:0.8rem;text-align:center;padding:10px;grid-column:1/-1">Nenhum time cadastrado</div>';
+    return;
+  }
+  grid.innerHTML = times.map((t,i) => `
+    <button class="time-picker-btn" id="${prefix}_tbtn_${i}" onclick="selecionarTimePicker('${prefix}',${i})">
+      <span class="tpb-emoji">${t.emoji||'⚽'}</span>
+      <span class="tpb-nome">${t.nome}</span>
+    </button>
+  `).join('');
+}
+
+function selecionarTimePicker(prefix, idx) {
+  const t = D.times[idx];
+  if (!t) return;
+  const casaEl   = document.getElementById(prefix+'_casa');
+  const foraEl   = document.getElementById(prefix+'_fora');
+  const slotCasa = document.getElementById(prefix+'_slot_casa');
+  const slotFora = document.getElementById(prefix+'_slot_fora');
+  const casaAtual = casaEl?.value;
+  const foraAtual = foraEl?.value;
+
+  // Lógica: 1º clique = casa, 2º clique = fora; clique no mesmo limpa
+  if (casaAtual === t.nome) {
+    // Deseleciona casa
+    casaEl.value = '';
+    slotCasa.textContent = '🏠 Casa';
+    slotCasa.className = 'time-sel-slot vazio';
+    document.getElementById(prefix+'_tbtn_'+idx)?.classList.remove('sel-casa');
+  } else if (foraAtual === t.nome) {
+    // Deseleciona fora
+    foraEl.value = '';
+    slotFora.textContent = '✈️ Fora';
+    slotFora.className = 'time-sel-slot vazio';
+    document.getElementById(prefix+'_tbtn_'+idx)?.classList.remove('sel-fora');
+  } else if (!casaAtual) {
+    // Seleciona como casa
+    casaEl.value = t.nome;
+    slotCasa.textContent = (t.emoji||'⚽') + ' ' + t.nome;
+    slotCasa.className = 'time-sel-slot casa';
+    document.getElementById(prefix+'_tbtn_'+idx)?.classList.add('sel-casa');
+  } else if (!foraAtual) {
+    // Seleciona como fora
+    foraEl.value = t.nome;
+    slotFora.textContent = (t.emoji||'⚽') + ' ' + t.nome;
+    slotFora.className = 'time-sel-slot fora';
+    document.getElementById(prefix+'_tbtn_'+idx)?.classList.add('sel-fora');
+  } else {
+    alert('Já há dois times selecionados. Clique em um deles para remover.');
+  }
+}
+
+function limparTimePicker(prefix) {
+  const casaEl = document.getElementById(prefix+'_casa');
+  const foraEl = document.getElementById(prefix+'_fora');
+  const slotCasa = document.getElementById(prefix+'_slot_casa');
+  const slotFora = document.getElementById(prefix+'_slot_fora');
+  if (casaEl) casaEl.value = '';
+  if (foraEl) foraEl.value = '';
+  if (slotCasa) { slotCasa.textContent='🏠 Casa'; slotCasa.className='time-sel-slot vazio'; }
+  if (slotFora) { slotFora.textContent='✈️ Fora'; slotFora.className='time-sel-slot vazio'; }
+  document.querySelectorAll('[id^="'+prefix+'_tbtn_"]').forEach(b => b.classList.remove('sel-casa','sel-fora'));
+}
+
+// ── ENCERRAR JOGO ──
+let ejGols = []; // [{nome, time, foto, qty}]
+
+function abrirEncerrarJogo(idx) {
+  const p = D.prox[idx];
+  if (!p) return;
+  document.getElementById('ej_prox_idx').value = idx;
+  document.getElementById('ej_gc').textContent = '0';
+  document.getElementById('ej_gf').textContent = '0';
+  document.getElementById('ej_rod').value = '';
+  document.getElementById('ej_busca_gol').value = '';
+  document.getElementById('ej_gol_sug').classList.remove('open');
+  ejGols = [];
+  renderEjGols();
+  // nomes e emojis dos times
+  const tCasa = (D.times||[]).find(t=>t.nome===p.casa);
+  const tFora = (D.times||[]).find(t=>t.nome===p.fora);
+  document.getElementById('ej_nome_casa').textContent = p.casa;
+  document.getElementById('ej_nome_fora').textContent = p.fora;
+  document.getElementById('ej_emoji_casa').textContent = tCasa?.emoji||'⚽';
+  document.getElementById('ej_emoji_fora').textContent = tFora?.emoji||'⚽';
+  document.getElementById('encerrarJogoModal').classList.add('open');
+}
+function fecharEncerrarJogo() {
+  document.getElementById('encerrarJogoModal').classList.remove('open');
+}
+function ajustarPlacar(lado, delta) {
+  const id = lado==='casa'?'ej_gc':'ej_gf';
+  const el = document.getElementById(id);
+  const val = Math.max(0, parseInt(el.textContent||0) + delta);
+  el.textContent = val;
+}
+function resolverTimeDoJogador(nome) {
+  // Procura em todos os times cadastrados qual time o jogador pertence
+  for (const t of (D.times||[])) {
+    if ((t.jogadores||[]).find(j => j.nome === nome)) return t.nome;
+  }
+  return '';
+}
+
+function buscarGoleador() {
+  const val = document.getElementById('ej_busca_gol').value.toLowerCase().trim();
+  const sug = document.getElementById('ej_gol_sug');
+  if (!val || val.length < 1) { sug.classList.remove('open'); return; }
+  const casaNome = document.getElementById('ej_nome_casa').textContent;
+  const foraNome = document.getElementById('ej_nome_fora').textContent;
+
+  // Monta lista com jogadores dos dois times do jogo (prioridade)
+  const jogadores = [];
+  const vistos = new Set();
+  [casaNome, foraNome].forEach(tNome => {
+    const t = (D.times||[]).find(t => t.nome === tNome);
+    (t?.jogadores||[]).forEach(j => {
+      if (j.nome.toLowerCase().includes(val) && !vistos.has(j.nome)) {
+        // pega foto do atleta cadastrado se o jogador não tiver
+        const atleta = (D.atletas||[]).find(a => a.nome === j.nome);
+        jogadores.push({ ...j, foto: j.foto || atleta?.foto || '', time: tNome });
+        vistos.add(j.nome);
+      }
+    });
+  });
+
+  // Completa com outros atletas cadastrados (de qualquer time)
+  (D.atletas||[]).filter(a => a.nome.toLowerCase().includes(val) && !vistos.has(a.nome))
+    .slice(0, 5)
+    .forEach(a => {
+      const time = resolverTimeDoJogador(a.nome);
+      jogadores.push({ ...a, time });
+      vistos.add(a.nome);
+    });
+
+  if (!jogadores.length) { sug.classList.remove('open'); return; }
+
+  sug.innerHTML = jogadores.slice(0, 8).map(j => {
+    const fotoHtml = j.foto
+      ? `<div class="gol-item-foto"><img src="${j.foto}"></div>`
+      : `<div class="gol-item-foto">👤</div>`;
+    const posCls = j.pos==='GOL'?'pos-gol':j.pos==='ZAG'?'pos-zag':j.pos==='MEI'?'pos-mei':'pos-ata';
+    const timeTag = j.time
+      ? `<span style="background:rgba(0,230,118,0.12);color:var(--verde);font-size:0.68rem;padding:2px 7px;border-radius:6px;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:1px">${j.time}</span>`
+      : `<span style="color:var(--texto);font-size:0.68rem;font-style:italic">sem time</span>`;
+    const idx = (D.atletas||[]).findIndex(a => a.nome === j.nome);
+    return `<div class="sug-item" style="display:flex;align-items:center;gap:10px;padding:10px 12px" onclick="adicionarGoleador(${idx},'${j.time.replace(/'/g,"\'")}')">
+      ${fotoHtml}
+      <div class="sug-info">
+        <div class="sug-nome">${j.nome}</div>
+        <div style="display:flex;align-items:center;gap:6px;margin-top:2px">
+          <span class="sug-pos-tag ${posCls}">${j.pos||''}</span>
+          ${timeTag}
+        </div>
+      </div>
+      <div class="sug-add-icon">+</div>
+    </div>`;
+  }).join('');
+
+  const input = document.getElementById('ej_busca_gol');
+  const rect = input.getBoundingClientRect();
+  sug.style.top  = (rect.bottom + 4) + 'px';
+  sug.style.left  = rect.left + 'px';
+  sug.style.width = rect.width + 'px';
+  sug.classList.add('open');
+}
+function adicionarGoleador(atlIdx, time) {
+  const atleta = atlIdx >= 0 ? (D.atletas||[])[atlIdx] : null;
+  if (!atleta) return;
+  const nome = atleta.nome;
+  const foto = atleta.foto || '';
+  const timeReal = time || resolverTimeDoJogador(nome);
+  const ja = ejGols.find(g => g.nome === nome);
+  if (ja) { ja.qty++; }
+  else { ejGols.push({nome, time: timeReal, foto, qty:1}); }
+  document.getElementById('ej_busca_gol').value = '';
+  document.getElementById('ej_gol_sug').classList.remove('open');
+  renderEjGols();
+}
+function ajustarGol(nome, delta) {
+  const g = ejGols.find(g=>g.nome===nome);
+  if (!g) return;
+  g.qty = Math.max(0, g.qty + delta);
+  if (g.qty === 0) ejGols = ejGols.filter(x=>x.nome!==nome);
+  renderEjGols();
+}
+function renderEjGols() {
+  const el = document.getElementById('ej_gols_lista');
+  if (!ejGols.length) {
+    el.innerHTML = '<p style="color:var(--texto);font-size:0.8rem;text-align:center;padding:8px">Nenhum gol adicionado</p>';
+    return;
+  }
+  el.innerHTML = ejGols.map(g => {
+    const fotoHtml = g.foto
+      ? `<div class="gol-item-foto"><img src="${g.foto}"></div>`
+      : `<div class="gol-item-foto">👤</div>`;
+    return `<div class="gol-item">
+      ${fotoHtml}
+      <div style="flex:1;min-width:0">
+        <div class="gol-item-nome">${g.nome}</div>
+        <div class="gol-item-time">${g.time||''}</div>
+      </div>
+      <div class="gol-qty">
+        <button class="gol-qty-btn" onclick="ajustarGol('${g.nome.replace(/'/g,"\'")}', -1)">−</button>
+        <span class="gol-qty-num">${g.qty}</span>
+        <button class="gol-qty-btn" onclick="ajustarGol('${g.nome.replace(/'/g,"\'")}', 1)">+</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+async function confirmarEncerrarJogo() {
+  const idx = parseInt(document.getElementById('ej_prox_idx').value);
+  const p = D.prox[idx];
+  if (!p) return;
+  const gc = parseInt(document.getElementById('ej_gc').textContent)||0;
+  const gf = parseInt(document.getElementById('ej_gf').textContent)||0;
+  const rod = document.getElementById('ej_rod').value.trim();
+  const hoje = new Date().toISOString().split('T')[0];
+  // Adiciona resultado
+  if (!D.result) D.result = [];
+  D.result.push({casa:p.casa, fora:p.fora, gc, gf, data:p.data||hoje, rod});
+  // Adiciona artilheiros
+  if (!D.artilh) D.artilh = [];
+  ejGols.forEach(g => {
+    const ja = D.artilh.find(a=>a.nome===g.nome);
+    if (ja) { ja.gols += g.qty; }
+    else { D.artilh.push({nome:g.nome, time:g.time||'', gols:g.qty}); }
+  });
+  // Atualiza classificação
+  atualizarClassifComResultado(p.casa, p.fora, gc, gf);
+  // Remove dos próximos
+  D.prox.splice(idx, 1);
+  await salvarDados();
+  renderAll();
+  renderAdmin();
+  fecharEncerrarJogo();
+  alert('✅ Resultado registrado!');
+}
+// fechar ao clicar fora
+document.addEventListener('click', e => {
+  const sug = document.getElementById('ej_gol_sug');
+  if (sug && !e.target.closest('#ej_busca_gol') && !e.target.closest('#ej_gol_sug')) {
+    sug.classList.remove('open');
+  }
+});
+
+// ── ATUALIZAR CLASSIFICAÇÃO AUTOMÁTICA ──
+function atualizarClassifComResultado(casa, fora, gc, gf) {
+  if (!D.classif) D.classif = [];
+
+  function getTime(nome) {
+    let t = D.classif.find(t => t.nome.toLowerCase() === nome.toLowerCase());
+    if (!t) {
+      // cria time na classif se não existir, pegando emoji dos times cadastrados
+      const tCad = (D.times||[]).find(x => x.nome.toLowerCase() === nome.toLowerCase());
+      t = { nome, emoji: tCad?.emoji||'⚽', v:0, e:0, d:0, gp:0, gc:0, pe:0 };
+      D.classif.push(t);
+    }
+    return t;
+  }
+
+  const tCasa = getTime(casa);
+  const tFora = getTime(fora);
+
+  // Gols
+  tCasa.gp = (tCasa.gp||0) + gc;
+  tCasa.gc = (tCasa.gc||0) + gf;
+  tFora.gp  = (tFora.gp||0)  + gf;
+  tFora.gc  = (tFora.gc||0)  + gc;
+
+  // Resultado
+  if (gc > gf) {
+    tCasa.v = (tCasa.v||0) + 1;
+    tFora.d  = (tFora.d||0)  + 1;
+  } else if (gc < gf) {
+    tFora.v  = (tFora.v||0)  + 1;
+    tCasa.d = (tCasa.d||0) + 1;
+  } else {
+    tCasa.e = (tCasa.e||0) + 1;
+    tFora.e  = (tFora.e||0)  + 1;
+  }
+}
 // ── START ──
 carregarDados();
 </script>
@@ -1488,6 +1912,62 @@ carregarDados();
       </div>
       <button class="btn-add" onclick="salvarEdicaoJog()">✅ SALVAR ALTERAÇÕES</button>
       <button onclick="fecharEditJog()" style="width:100%;background:none;border:1px solid var(--borda2);color:var(--texto);border-radius:12px;padding:13px;font-family:'Barlow Condensed',sans-serif;font-size:0.9rem;cursor:pointer;margin-top:8px">CANCELAR</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- MODAL ENCERRAR JOGO -->
+<div class="modal-overlay" id="encerrarJogoModal">
+  <div class="modal-box" style="max-height:92vh">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <span class="modal-title">⚽ ENCERRAR JOGO</span>
+      <button class="sheet-close" onclick="fecharEncerrarJogo()">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="ej_prox_idx">
+
+      <!-- Placar -->
+      <div class="placar-display">
+        <div class="placar-time">
+          <div class="placar-time-emoji" id="ej_emoji_casa">⚽</div>
+          <div class="placar-time-nome" id="ej_nome_casa">Casa</div>
+        </div>
+        <div class="placar-gols">
+          <button class="placar-gols-btn" onclick="ajustarPlacar('casa',-1)">−</button>
+          <div class="placar-gols-num" id="ej_gc">0</div>
+          <button class="placar-gols-btn" onclick="ajustarPlacar('casa',1)">+</button>
+        </div>
+        <div class="placar-vs">×</div>
+        <div class="placar-gols">
+          <button class="placar-gols-btn" onclick="ajustarPlacar('fora',-1)">−</button>
+          <div class="placar-gols-num" id="ej_gf">0</div>
+          <button class="placar-gols-btn" onclick="ajustarPlacar('fora',1)">+</button>
+        </div>
+        <div class="placar-time">
+          <div class="placar-time-emoji" id="ej_emoji_fora">⚽</div>
+          <div class="placar-time-nome" id="ej_nome_fora">Fora</div>
+        </div>
+      </div>
+
+      <div class="fg" style="margin-bottom:14px">
+        <label>Rodada</label>
+        <input id="ej_rod" placeholder="ex: Rodada 1">
+      </div>
+
+      <!-- Artilheiros do jogo -->
+      <div class="artilheiros-section">
+        <p class="sub-label" style="margin-bottom:10px">⚽ Gols do jogo</p>
+        <div class="artilheiros-busca">
+          <input id="ej_busca_gol" class="input-busca" style="width:100%" placeholder="🔍 Buscar jogador que marcou..." autocomplete="off" oninput="buscarGoleador()">
+          <div id="ej_gol_sug" class="jogador-sug"></div>
+        </div>
+        <div id="ej_gols_lista" style="max-height:200px;overflow-y:auto"></div>
+      </div>
+
+      <button class="btn-add" style="margin-top:14px" onclick="confirmarEncerrarJogo()">✅ CONFIRMAR RESULTADO</button>
+      <button onclick="fecharEncerrarJogo()" style="width:100%;background:none;border:1px solid var(--borda2);color:var(--texto);border-radius:12px;padding:13px;font-family:'Barlow Condensed',sans-serif;font-size:0.9rem;cursor:pointer;margin-top:8px">CANCELAR</button>
     </div>
   </div>
 </div>
