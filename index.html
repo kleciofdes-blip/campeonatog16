@@ -796,8 +796,17 @@ function filtrarAtletas() {
     lista.sort((a,b)=>a.nome.localeCompare(b.nome)).forEach((a,i) => {
       const fotoHtml = a.foto
         ? `<div class="atleta-item-foto"><img src="${a.foto}"></div>`
-        : `<div class="atleta-item-foto" style="background:var(--borda2);font-size:1rem">👤</div>`;
-      html += `<div class="atleta-item">${fotoHtml}<span class="atleta-nome">${a.nome}</span><span class="j-pos ${posCls(pos)}">${pos}</span></div>`;
+        : `<div class="atleta-item-foto" style="background:var(--borda2);font-size:1.1rem;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid var(--borda2);flex-shrink:0">👤</div>`;
+      const fisico = [];
+      if (a.altura) fisico.push(`📏 ${a.altura}cm`);
+      if (a.peso_fin) fisico.push(`⚖️ ${a.peso_fin}kg`);
+      if (a.peso_ini && a.peso_fin) {
+        const diff = (parseFloat(a.peso_fin)-parseFloat(a.peso_ini)).toFixed(1);
+        if (diff < 0) fisico.push(`<span style="color:#69f0ae">▼${Math.abs(diff)}kg</span>`);
+        else if (diff > 0) fisico.push(`<span style="color:#ef5350">▲${diff}kg</span>`);
+      }
+      const fisicoHtml = fisico.length ? `<div style="font-size:0.72rem;color:var(--texto);margin-top:2px">${fisico.join(' · ')}</div>` : '';
+      html += `<div class="atleta-item">${fotoHtml}<div style="flex:1;min-width:0"><div class="atleta-nome">${a.nome}</div>${fisicoHtml}</div><span class="j-pos ${posCls(pos)}">${pos}</span></div>`;
     });
     html += '</div>';
   });
@@ -1156,22 +1165,51 @@ function abrirEditAtleta(i) {
   document.getElementById('edit_atl_nome').value = a.nome || '';
   document.getElementById('edit_atl_pos').value = a.pos || 'GOL';
   document.getElementById('edit_atl_foto').value = a.foto || '';
+  document.getElementById('edit_atl_altura').value = a.altura || '';
+  document.getElementById('edit_atl_peso_ini').value = a.peso_ini || '';
+  document.getElementById('edit_atl_peso_fin').value = a.peso_fin || '';
   const prev = document.getElementById('edit_atl_prev');
   prev.innerHTML = a.foto
     ? `<img src="${a.foto}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`
     : '👤';
+  atualizarDiffPeso();
   document.getElementById('editAtletaModal').classList.add('open');
 }
 function fecharEditAtleta() {
   document.getElementById('editAtletaModal').classList.remove('open');
 }
+function atualizarDiffPeso() {
+  const ini = parseFloat(document.getElementById('edit_atl_peso_ini').value);
+  const fin = parseFloat(document.getElementById('edit_atl_peso_fin').value);
+  const el = document.getElementById('peso_diff_info');
+  if (!isNaN(ini) && !isNaN(fin) && ini > 0 && fin > 0) {
+    const diff = (fin - ini).toFixed(1);
+    const positivo = diff > 0;
+    const neutro = diff == 0;
+    el.style.display = 'block';
+    el.style.background = neutro ? 'rgba(255,255,255,0.05)' : positivo ? 'rgba(239,83,80,0.1)' : 'rgba(105,240,174,0.1)';
+    el.style.color = neutro ? 'var(--texto)' : positivo ? '#ef5350' : '#69f0ae';
+    el.style.border = `1px solid ${neutro ? 'var(--borda2)' : positivo ? '#ef5350' : '#69f0ae'}`;
+    el.innerHTML = neutro
+      ? '⚖️ Peso mantido'
+      : positivo
+        ? `📈 Ganhou <b>+${diff} kg</b> desde o início`
+        : `📉 Perdeu <b>${Math.abs(diff)} kg</b> desde o início`;
+  } else {
+    el.style.display = 'none';
+  }
+}
 async function salvarEdicaoAtleta() {
   const i = parseInt(document.getElementById('edit_atl_idx').value);
   if (isNaN(i)) return;
   D.atletas[i] = {
-    nome: document.getElementById('edit_atl_nome').value.trim(),
-    pos:  document.getElementById('edit_atl_pos').value,
-    foto: document.getElementById('edit_atl_foto').value || '',
+    ...D.atletas[i],
+    nome:     document.getElementById('edit_atl_nome').value.trim(),
+    pos:      document.getElementById('edit_atl_pos').value,
+    foto:     document.getElementById('edit_atl_foto').value || '',
+    altura:   document.getElementById('edit_atl_altura').value || '',
+    peso_ini: document.getElementById('edit_atl_peso_ini').value || '',
+    peso_fin: document.getElementById('edit_atl_peso_fin').value || '',
   };
   await salvarDados();
   renderAll();
@@ -1310,14 +1348,17 @@ carregarDados();
     </div>
     <div class="modal-body">
       <input type="hidden" id="edit_atl_idx">
+
       <div class="foto-upload-center">
         <div class="foto-upload-circle" id="edit_atl_prev" onclick="document.getElementById('edit_atl_file').click()">👤</div>
         <button class="btn-foto" onclick="document.getElementById('edit_atl_file').click()">📷 Alterar foto</button>
         <input type="file" id="edit_atl_file" accept="image/*" style="display:none" onchange="previewFotoEdit(this,'edit_atl_prev','edit_atl_foto')">
         <input type="hidden" id="edit_atl_foto">
-        <div style="font-size:0.72rem;color:var(--texto)">Toque no círculo ou no botão para escolher foto</div>
+        <div style="font-size:0.72rem;color:var(--texto)">Toque no círculo ou clique no botão para escolher foto</div>
       </div>
+
       <div class="fg"><label>Nome</label><input id="edit_atl_nome" placeholder="Nome do atleta"></div>
+
       <div class="fg">
         <label>Posição</label>
         <select id="edit_atl_pos">
@@ -1327,6 +1368,26 @@ carregarDados();
           <option value="ATA">⚡ Atacante</option>
         </select>
       </div>
+
+      <div style="background:var(--borda2);border-radius:12px;padding:14px;margin-bottom:14px">
+        <p style="font-family:'Barlow Condensed',sans-serif;font-size:0.7rem;letter-spacing:2px;text-transform:uppercase;color:var(--texto);margin-bottom:12px">📏 DADOS FÍSICOS</p>
+        <div class="grid2">
+          <div class="fg" style="margin-bottom:0">
+            <label>Altura (cm)</label>
+            <input id="edit_atl_altura" type="number" min="100" max="250" placeholder="ex: 178" inputmode="numeric">
+          </div>
+          <div class="fg" style="margin-bottom:0">
+            <label>Peso Inicial (kg)</label>
+            <input id="edit_atl_peso_ini" type="number" min="30" max="200" placeholder="ex: 75.5" step="0.1" inputmode="decimal" oninput="atualizarDiffPeso()">
+          </div>
+        </div>
+        <div class="fg" style="margin-top:10px;margin-bottom:0">
+          <label>Peso Atual (kg)</label>
+          <input id="edit_atl_peso_fin" type="number" min="30" max="200" placeholder="ex: 72.0" step="0.1" inputmode="decimal" oninput="atualizarDiffPeso()">
+        </div>
+        <div id="peso_diff_info" style="margin-top:10px;display:none;font-family:'Barlow Condensed',sans-serif;font-size:0.85rem;padding:8px 12px;border-radius:8px;text-align:center"></div>
+      </div>
+
       <button class="btn-add" onclick="salvarEdicaoAtleta()">✅ SALVAR ALTERAÇÕES</button>
       <button onclick="fecharEditAtleta()" style="width:100%;background:none;border:1px solid var(--borda2);color:var(--texto);border-radius:12px;padding:13px;font-family:'Barlow Condensed',sans-serif;font-size:0.9rem;cursor:pointer;margin-top:8px">CANCELAR</button>
     </div>
