@@ -505,65 +505,29 @@ html,body{height:100%;background:var(--preto);color:var(--branco);font-family:'B
       </div>
       <div class="a-section" id="at-destaques">
         <p class="sub-label">⭐ Destaque da Semana</p>
-        <p style="color:var(--texto);font-size:0.8rem;margin-bottom:14px">Defina os 4 destaques que aparecem na página inicial</p>
+        <p style="color:var(--texto);font-size:0.8rem;margin-bottom:14px">Selecione o atleta cadastrado e descreva o feito da semana</p>
 
         <div style="background:var(--borda2);border-radius:12px;padding:14px;margin-bottom:10px">
           <p class="sub-label" style="margin-top:0;color:var(--ouro)">⚽ Artilheiro da Semana</p>
-          <div class="foto-upload-wrap">
-            <div class="foto-preview" id="prev_art">⚽</div>
-            <div>
-              <div style="font-size:0.75rem;color:var(--texto);margin-bottom:6px">Foto (URL ou base64)</div>
-              <button class="btn-foto" onclick="document.getElementById('foto_art_file').click()">📷 Escolher foto</button>
-              <input type="file" id="foto_art_file" accept="image/*" style="display:none" onchange="previewFoto(this,'prev_art','foto_art')">
-              <input type="hidden" id="foto_art">
-            </div>
-          </div>
-          <div class="fg"><label>Nome</label><input id="dst_art_nome" placeholder="Nome do artilheiro" autocomplete="off" oninput="sugerirAtleta('dst_art_nome','dst_art_sug')"><div id="dst_art_sug" class="autocomplete-list"></div></div>
+          <div class="fg" style="position:relative"><label>Jogador</label><input id="dst_art_nome" placeholder="Buscar atleta cadastrado..." autocomplete="off" oninput="sugerirAtleta('dst_art_nome','dst_art_sug')"><div id="dst_art_sug" class="autocomplete-list"></div></div>
           <div class="fg"><label>Feito</label><input id="dst_art_feito" placeholder="ex: 3 gols na rodada"></div>
         </div>
 
         <div style="background:var(--borda2);border-radius:12px;padding:14px;margin-bottom:10px">
           <p class="sub-label" style="margin-top:0;color:var(--azul)">🧤 Goleiro Menos Vazado</p>
-          <div class="foto-upload-wrap">
-            <div class="foto-preview" id="prev_gol">🧤</div>
-            <div>
-              <div style="font-size:0.75rem;color:var(--texto);margin-bottom:6px">Foto</div>
-              <button class="btn-foto" onclick="document.getElementById('foto_gol_file').click()">📷 Escolher foto</button>
-              <input type="file" id="foto_gol_file" accept="image/*" style="display:none" onchange="previewFoto(this,'prev_gol','foto_gol')">
-              <input type="hidden" id="foto_gol">
-            </div>
-          </div>
-          <div class="fg"><label>Nome</label><input id="dst_gol_nome" placeholder="Nome do goleiro" autocomplete="off" oninput="sugerirAtleta('dst_gol_nome','dst_gol_sug')"><div id="dst_gol_sug" class="autocomplete-list"></div></div>
+          <div class="fg" style="position:relative"><label>Jogador</label><input id="dst_gol_nome" placeholder="Buscar atleta cadastrado..." autocomplete="off" oninput="sugerirAtleta('dst_gol_nome','dst_gol_sug')"><div id="dst_gol_sug" class="autocomplete-list"></div></div>
           <div class="fg"><label>Feito</label><input id="dst_gol_feito" placeholder="ex: 2 jogos sem sofrer gol"></div>
         </div>
 
         <div style="background:var(--borda2);border-radius:12px;padding:14px;margin-bottom:10px">
           <p class="sub-label" style="margin-top:0;color:var(--verde)">⭐ MVP da Semana</p>
-          <div class="foto-upload-wrap">
-            <div class="foto-preview" id="prev_mvp">⭐</div>
-            <div>
-              <div style="font-size:0.75rem;color:var(--texto);margin-bottom:6px">Foto</div>
-              <button class="btn-foto" onclick="document.getElementById('foto_mvp_file').click()">📷 Escolher foto</button>
-              <input type="file" id="foto_mvp_file" accept="image/*" style="display:none" onchange="previewFoto(this,'prev_mvp','foto_mvp')">
-              <input type="hidden" id="foto_mvp">
-            </div>
-          </div>
-          <div class="fg"><label>Nome</label><input id="dst_mvp_nome" placeholder="Nome do MVP" autocomplete="off" oninput="sugerirAtleta('dst_mvp_nome','dst_mvp_sug')"><div id="dst_mvp_sug" class="autocomplete-list"></div></div>
+          <div class="fg" style="position:relative"><label>Jogador</label><input id="dst_mvp_nome" placeholder="Buscar atleta cadastrado..." autocomplete="off" oninput="sugerirAtleta('dst_mvp_nome','dst_mvp_sug')"><div id="dst_mvp_sug" class="autocomplete-list"></div></div>
           <div class="fg"><label>Feito</label><input id="dst_mvp_feito" placeholder="ex: Melhor jogador da rodada"></div>
         </div>
 
         <div style="background:var(--borda2);border-radius:12px;padding:14px;margin-bottom:16px">
           <p class="sub-label" style="margin-top:0;color:var(--laranja)">🎯 Mais Assistências</p>
-          <div class="foto-upload-wrap">
-            <div class="foto-preview" id="prev_ass">🎯</div>
-            <div>
-              <div style="font-size:0.75rem;color:var(--texto);margin-bottom:6px">Foto</div>
-              <button class="btn-foto" onclick="document.getElementById('foto_ass_file').click()">📷 Escolher foto</button>
-              <input type="file" id="foto_ass_file" accept="image/*" style="display:none" onchange="previewFoto(this,'prev_ass','foto_ass')">
-              <input type="hidden" id="foto_ass">
-            </div>
-          </div>
-          <div class="fg"><label>Nome</label><input id="dst_ass_nome" placeholder="Nome do jogador" autocomplete="off" oninput="sugerirAtleta('dst_ass_nome','dst_ass_sug')"><div id="dst_ass_sug" class="autocomplete-list"></div></div>
+          <div class="fg" style="position:relative"><label>Jogador</label><input id="dst_ass_nome" placeholder="Buscar atleta cadastrado..." autocomplete="off" oninput="sugerirAtleta('dst_ass_nome','dst_ass_sug')"><div id="dst_ass_sug" class="autocomplete-list"></div></div>
           <div class="fg"><label>Feito</label><input id="dst_ass_feito" placeholder="ex: 2 assistências na rodada"></div>
         </div>
 
@@ -1144,10 +1108,13 @@ async function salvarDestaques() {
   if (!D.destaques) D.destaques = {};
   const tipos = ['art','gol','mvp','ass'];
   tipos.forEach(t => {
+    const nome = document.getElementById(`dst_${t}_nome`)?.value?.trim() || '';
+    // busca foto do atleta cadastrado
+    const atleta = (D.atletas||[]).find(a => a.nome.toLowerCase() === nome.toLowerCase());
     D.destaques[t] = {
-      nome:  document.getElementById(`dst_${t}_nome`)?.value?.trim() || '',
+      nome,
       feito: document.getElementById(`dst_${t}_feito`)?.value?.trim() || '',
-      foto:  document.getElementById(`foto_${t}`)?.value || '',
+      foto:  atleta?.foto || '',
     };
   });
   await salvarDados();
@@ -1161,14 +1128,8 @@ function carregarFormDestaques() {
     const d = dst[t] || {};
     const nomeEl  = document.getElementById(`dst_${t}_nome`);
     const feitoEl = document.getElementById(`dst_${t}_feito`);
-    const fotoEl  = document.getElementById(`foto_${t}`);
-    const prevEl  = document.getElementById(`prev_${t}`);
     if (nomeEl)  nomeEl.value  = d.nome  || '';
     if (feitoEl) feitoEl.value = d.feito || '';
-    if (fotoEl && d.foto) {
-      fotoEl.value = d.foto;
-      if (prevEl) prevEl.innerHTML = `<img src="${d.foto}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
-    }
   });
 }
 
