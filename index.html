@@ -393,6 +393,8 @@ html,body{height:100%;background:var(--preto);color:var(--branco);font-family:'B
   <div class="section" id="s-artilh">
     <div class="sec-title">⚽ Artilharia</div>
     <div class="art-list" id="tArtilh"></div>
+    <div class="sec-title" style="margin-top:20px">🎯 Assistências</div>
+    <div class="art-list" id="tAssist"></div>
   </div>
   <div class="section" id="s-result">
     <div class="sec-title">📋 Resultados</div>
@@ -632,7 +634,7 @@ const HEADERS = {
 };
 
 const DADOS_VAZIOS = {
-  classif:[], artilh:[], result:[], prox:[], times:[], atletas:[], destaques:{}
+  classif:[], artilh:[], assist:[], result:[], prox:[], times:[], atletas:[], destaques:{}
 };
 
 let D = JSON.parse(JSON.stringify(DADOS_VAZIOS));
@@ -927,7 +929,7 @@ function rClassif() {
       sg:  t.gp - t.gc,
       pts: t.v*3 + t.e + (t.pe||0)
     }))
-    .sort((a,b) => b.pts-a.pts || b.sg-a.sg || b.gp-a.gp || a.nome.localeCompare(b.nome));
+    .sort((a,b) => b.pts-a.pts || b.v-a.v || b.sg-a.sg || b.gp-a.gp || a.nome.localeCompare(b.nome));
 
   if (!lista.length){
     tb.innerHTML=`<tr><td colspan="8" style="text-align:center;padding:28px;color:var(--texto)">Nenhum time cadastrado</td></tr>`;
@@ -952,11 +954,33 @@ function rClassif() {
 }
 
 function rArtilh() {
-  const el=document.getElementById('tArtilh');
-  const lista=[...(D.artilh||[])].sort((a,b)=>b.gols-a.gols);
-  if(!lista.length){el.innerHTML=empty('⚽','Nenhum artilheiro');return;}
-  el.innerHTML=lista.map((a,i)=>{const p=i+1,c=p===1?'p1c':p===2?'p2c':p===3?'p3c':'';
-    return `<div class="art-card"><div class="art-pos ${c}">${p}</div><div class="art-info"><div class="art-nome">${a.nome}</div><div class="art-time">🟢 ${a.time||''}</div></div><div><div class="art-gols">${a.gols}</div><div class="art-gols-label">GOLS</div></div></div>`;
+  // Gols
+  const el = document.getElementById('tArtilh');
+  const lista = [...(D.artilh||[])].sort((a,b) => b.gols - a.gols);
+  if (!lista.length) { el.innerHTML = empty('⚽','Nenhum artilheiro'); }
+  else {
+    el.innerHTML = lista.map((a,i) => {
+      const atleta = (D.atletas||[]).find(x => x.nome === a.nome);
+      const fotoHtml = atleta?.foto
+        ? `<img src="${atleta.foto}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid var(--borda2)">`
+        : `<div style="width:40px;height:40px;border-radius:50%;background:var(--borda2);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0">👤</div>`;
+      const p=i+1, c=p===1?'p1c':p===2?'p2c':p===3?'p3c':'';
+      return `<div class="art-card">${fotoHtml}<div class="art-pos ${c}" style="margin-left:4px">${p}</div><div class="art-info"><div class="art-nome">${a.nome}</div><div class="art-time">🟢 ${a.time||''}</div></div><div><div class="art-gols">${a.gols}</div><div class="art-gols-label">GOLS</div></div></div>`;
+    }).join('');
+  }
+
+  // Assistências
+  const elA = document.getElementById('tAssist');
+  if (!elA) return;
+  const listaA = [...(D.assist||[])].sort((a,b) => b.qty - a.qty);
+  if (!listaA.length) { elA.innerHTML = empty('🎯','Nenhuma assistência'); return; }
+  elA.innerHTML = listaA.map((a,i) => {
+    const atleta = (D.atletas||[]).find(x => x.nome === a.nome);
+    const fotoHtml = atleta?.foto
+      ? `<img src="${atleta.foto}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid var(--borda2)">`
+      : `<div style="width:40px;height:40px;border-radius:50%;background:var(--borda2);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0">👤</div>`;
+    const p=i+1, c=p===1?'p1c':p===2?'p2c':p===3?'p3c':'';
+    return `<div class="art-card">${fotoHtml}<div class="art-pos ${c}" style="margin-left:4px">${p}</div><div class="art-info"><div class="art-nome">${a.nome}</div><div class="art-time">🟢 ${a.time||''}</div></div><div><div class="art-gols" style="color:var(--laranja)">${a.qty}</div><div class="art-gols-label">ASSIST</div></div></div>`;
   }).join('');
 }
 
@@ -1553,7 +1577,8 @@ function limparTimePicker(prefix) {
 }
 
 // ── ENCERRAR JOGO ──
-let ejGols = []; // [{nome, time, foto, qty}]
+let ejGols   = []; // [{nome, time, foto, qty}]
+let ejAssist = []; // [{nome, time, foto, qty}]
 
 function abrirEncerrarJogo(idx) {
   const p = D.prox[idx];
@@ -1565,7 +1590,9 @@ function abrirEncerrarJogo(idx) {
   document.getElementById('ej_busca_gol').value = '';
   document.getElementById('ej_gol_sug').classList.remove('open');
   ejGols = [];
+  ejAssist = [];
   renderEjGols();
+  renderEjAssist();
   // nomes e emojis dos times
   const tCasa = (D.times||[]).find(t=>t.nome===p.casa);
   const tFora = (D.times||[]).find(t=>t.nome===p.fora);
@@ -1716,6 +1743,13 @@ async function confirmarEncerrarJogo() {
     if (ja) { ja.gols += g.qty; }
     else { D.artilh.push({nome:g.nome, time:g.time||'', gols:g.qty}); }
   });
+  // Adiciona assistências
+  if (!D.assist) D.assist = [];
+  ejAssist.forEach(g => {
+    const ja = D.assist.find(a => a.nome === g.nome);
+    if (ja) { ja.qty += g.qty; }
+    else { D.assist.push({nome:g.nome, time:g.time||'', qty:g.qty}); }
+  });
   // Atualiza classificação
   atualizarClassifComResultado(p.casa, p.fora, gc, gf);
   // Remove dos próximos
@@ -1731,6 +1765,10 @@ document.addEventListener('click', e => {
   const sug = document.getElementById('ej_gol_sug');
   if (sug && !e.target.closest('#ej_busca_gol') && !e.target.closest('#ej_gol_sug')) {
     sug.classList.remove('open');
+  }
+  const sugA = document.getElementById('ej_ass_sug');
+  if (sugA && !e.target.closest('#ej_busca_ass') && !e.target.closest('#ej_ass_sug')) {
+    sugA.classList.remove('open');
   }
 });
 
@@ -1769,6 +1807,105 @@ function atualizarClassifComResultado(casa, fora, gc, gf) {
     tCasa.e = (tCasa.e||0) + 1;
     tFora.e  = (tFora.e||0)  + 1;
   }
+}
+
+// ── ASSISTÊNCIAS NO JOGO ──
+function buscarAssistente() {
+  const val = document.getElementById('ej_busca_ass').value.toLowerCase().trim();
+  const sug = document.getElementById('ej_ass_sug');
+  if (!val || val.length < 1) { sug.classList.remove('open'); return; }
+  const casaNome = document.getElementById('ej_nome_casa').textContent;
+  const foraNome = document.getElementById('ej_nome_fora').textContent;
+  const jogadores = [];
+  const vistos = new Set();
+  [casaNome, foraNome].forEach(tNome => {
+    const t = (D.times||[]).find(t => t.nome === tNome);
+    (t?.jogadores||[]).forEach(j => {
+      if (j.nome.toLowerCase().includes(val) && !vistos.has(j.nome)) {
+        const atleta = (D.atletas||[]).find(a => a.nome === j.nome);
+        jogadores.push({...j, foto: j.foto||atleta?.foto||'', time: tNome});
+        vistos.add(j.nome);
+      }
+    });
+  });
+  (D.atletas||[]).filter(a => a.nome.toLowerCase().includes(val) && !vistos.has(a.nome))
+    .slice(0,5).forEach(a => {
+      jogadores.push({...a, time: resolverTimeDoJogador(a.nome)});
+      vistos.add(a.nome);
+    });
+  if (!jogadores.length) { sug.classList.remove('open'); return; }
+  sug.innerHTML = jogadores.slice(0,8).map(j => {
+    const fotoHtml = j.foto
+      ? `<div class="gol-item-foto"><img src="${j.foto}"></div>`
+      : `<div class="gol-item-foto">👤</div>`;
+    const posCls = j.pos==='GOL'?'pos-gol':j.pos==='ZAG'?'pos-zag':j.pos==='MEI'?'pos-mei':'pos-ata';
+    const timeTag = j.time
+      ? `<span style="background:rgba(255,183,77,0.15);color:var(--laranja);font-size:0.68rem;padding:2px 7px;border-radius:6px;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:1px">${j.time}</span>`
+      : `<span style="color:var(--texto);font-size:0.68rem;font-style:italic">sem time</span>`;
+    const idx = (D.atletas||[]).findIndex(a => a.nome === j.nome);
+    return `<div class="sug-item" style="display:flex;align-items:center;gap:10px;padding:10px 12px" onclick="adicionarAssistente(${idx},'${j.time.replace(/'/g,"\'")}')">
+      ${fotoHtml}
+      <div class="sug-info">
+        <div class="sug-nome">${j.nome}</div>
+        <div style="display:flex;align-items:center;gap:6px;margin-top:2px">
+          <span class="sug-pos-tag ${posCls}">${j.pos||''}</span>
+          ${timeTag}
+        </div>
+      </div>
+      <div class="sug-add-icon" style="color:var(--laranja)">+</div>
+    </div>`;
+  }).join('');
+  const input = document.getElementById('ej_busca_ass');
+  const rect = input.getBoundingClientRect();
+  sug.style.top  = (rect.bottom+4)+'px';
+  sug.style.left  = rect.left+'px';
+  sug.style.width = rect.width+'px';
+  sug.classList.add('open');
+}
+function adicionarAssistente(atlIdx, time) {
+  const atleta = atlIdx >= 0 ? (D.atletas||[])[atlIdx] : null;
+  if (!atleta) return;
+  const nome = atleta.nome;
+  const foto = atleta.foto || '';
+  const timeReal = time || resolverTimeDoJogador(nome);
+  const ja = ejAssist.find(g => g.nome === nome);
+  if (ja) { ja.qty++; }
+  else { ejAssist.push({nome, time: timeReal, foto, qty:1}); }
+  document.getElementById('ej_busca_ass').value = '';
+  document.getElementById('ej_ass_sug').classList.remove('open');
+  renderEjAssist();
+}
+function ajustarAssist(nome, delta) {
+  const g = ejAssist.find(g => g.nome === nome);
+  if (!g) return;
+  g.qty = Math.max(0, g.qty + delta);
+  if (g.qty === 0) ejAssist = ejAssist.filter(x => x.nome !== nome);
+  renderEjAssist();
+}
+function renderEjAssist() {
+  const el = document.getElementById('ej_assist_lista');
+  if (!el) return;
+  if (!ejAssist.length) {
+    el.innerHTML = '<p style="color:var(--texto);font-size:0.8rem;text-align:center;padding:8px">Nenhuma assistência adicionada</p>';
+    return;
+  }
+  el.innerHTML = ejAssist.map(g => {
+    const fotoHtml = g.foto
+      ? `<div class="gol-item-foto"><img src="${g.foto}"></div>`
+      : `<div class="gol-item-foto">👤</div>`;
+    return `<div class="gol-item">
+      ${fotoHtml}
+      <div style="flex:1;min-width:0">
+        <div class="gol-item-nome">${g.nome}</div>
+        <div class="gol-item-time" style="color:var(--laranja)">${g.time||''}</div>
+      </div>
+      <div class="gol-qty">
+        <button class="gol-qty-btn" onclick="ajustarAssist('${g.nome.replace(/'/g,"\'")}', -1)">−</button>
+        <span class="gol-qty-num" style="color:var(--laranja)">${g.qty}</span>
+        <button class="gol-qty-btn" onclick="ajustarAssist('${g.nome.replace(/'/g,"\'")}', 1)">+</button>
+      </div>
+    </div>`;
+  }).join('');
 }
 // ── START ──
 carregarDados();
@@ -1956,14 +2093,24 @@ carregarDados();
         <input id="ej_rod" placeholder="ex: Rodada 1">
       </div>
 
-      <!-- Artilheiros do jogo -->
+      <!-- Gols do jogo -->
       <div class="artilheiros-section">
         <p class="sub-label" style="margin-bottom:10px">⚽ Gols do jogo</p>
         <div class="artilheiros-busca">
           <input id="ej_busca_gol" class="input-busca" style="width:100%" placeholder="🔍 Buscar jogador que marcou..." autocomplete="off" oninput="buscarGoleador()">
           <div id="ej_gol_sug" class="jogador-sug"></div>
         </div>
-        <div id="ej_gols_lista" style="max-height:200px;overflow-y:auto"></div>
+        <div id="ej_gols_lista" style="max-height:180px;overflow-y:auto"></div>
+      </div>
+
+      <!-- Assistências do jogo -->
+      <div class="artilheiros-section" style="margin-top:14px">
+        <p class="sub-label" style="margin-bottom:10px;color:var(--laranja)">🎯 Assistências do jogo</p>
+        <div class="artilheiros-busca">
+          <input id="ej_busca_ass" class="input-busca" style="width:100%;border-color:rgba(255,183,77,0.4)" placeholder="🔍 Buscar jogador que assistiu..." autocomplete="off" oninput="buscarAssistente()">
+          <div id="ej_ass_sug" class="jogador-sug"></div>
+        </div>
+        <div id="ej_assist_lista" style="max-height:180px;overflow-y:auto"></div>
       </div>
 
       <button class="btn-add" style="margin-top:14px" onclick="confirmarEncerrarJogo()">✅ CONFIRMAR RESULTADO</button>
