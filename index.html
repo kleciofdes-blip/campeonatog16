@@ -202,12 +202,31 @@ html,body{height:100%;background:var(--preto);color:var(--branco);font-family:'B
 .btn-del{background:none;border:1px solid #c62828;color:#ef5350;width:34px;height:34px;border-radius:8px;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .btn-del:active{background:#c62828;color:#fff;}
 .sub-label{font-family:'Barlow Condensed',sans-serif;font-size:0.7rem;letter-spacing:2px;text-transform:uppercase;color:var(--texto);margin:14px 0 8px;}
-.time-block{background:var(--borda2);border-radius:12px;overflow:hidden;margin-bottom:12px;}
-.time-block-head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:#2a2a2a;}
-.time-block-nome{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1rem;}
-.time-block-body{padding:10px 14px;}
-.jog-mini{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--borda);font-size:0.82rem;}
-.jog-mini:last-of-type{border-bottom:none;}
+.time-block{background:var(--card);border-radius:16px;overflow:visible;margin-bottom:16px;border:1px solid var(--borda);}
+.time-block-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:#222;border-radius:16px 16px 0 0;}
+.time-block-nome{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:2px;color:var(--branco);}
+.time-block-count{font-family:'Barlow Condensed',sans-serif;font-size:0.72rem;color:var(--texto);letter-spacing:1px;margin-left:8px;}
+.time-block-body{padding:12px;}
+.jog-mini{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;margin-bottom:4px;background:var(--borda2);transition:background 0.15s;}
+.jog-mini:last-of-type{margin-bottom:0;}
+.jog-mini:hover{background:#2e2e2e;}
+.add-atleta-area{margin-top:10px;padding:10px;background:rgba(0,230,118,0.04);border:1px dashed rgba(0,230,118,0.25);border-radius:12px;position:relative;}
+.add-atleta-label{font-family:'Barlow Condensed',sans-serif;font-size:0.7rem;letter-spacing:2px;color:var(--verde);text-transform:uppercase;margin-bottom:8px;}
+.add-atleta-row{display:flex;gap:6px;align-items:center;}
+.input-num{width:48px;background:var(--card);border:1px solid var(--borda);border-radius:8px;color:var(--branco);padding:10px 8px;font-size:0.88rem;font-family:Barlow,sans-serif;text-align:center;}
+.input-busca{flex:1;background:var(--card);border:1px solid var(--borda);border-radius:8px;color:var(--branco);padding:10px 12px;font-size:0.88rem;font-family:Barlow,sans-serif;}
+.input-busca:focus{outline:none;border-color:var(--verde);}
+.sug-lista{position:fixed;background:#1e1e1e;border:1px solid var(--verde);border-radius:12px;z-index:9999;display:none;max-height:260px;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,0.8);width:280px;}
+.sug-lista.open{display:block;}
+.sug-item{display:flex;align-items:center;gap:10px;padding:10px 12px;cursor:pointer;border-bottom:1px solid var(--borda);transition:background 0.15s;}
+.sug-item:last-child{border-bottom:none;border-radius:0 0 12px 12px;}
+.sug-item:active,.sug-item:hover{background:rgba(0,230,118,0.1);}
+.sug-foto{width:38px;height:38px;border-radius:50%;object-fit:cover;flex-shrink:0;background:var(--borda2);display:flex;align-items:center;justify-content:center;font-size:1rem;overflow:hidden;}
+.sug-foto img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+.sug-info{flex:1;min-width:0;}
+.sug-nome{font-size:0.9rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sug-pos-tag{font-family:'Barlow Condensed',sans-serif;font-size:0.65rem;padding:2px 7px;border-radius:6px;font-weight:700;letter-spacing:1px;}
+.sug-add-icon{color:var(--verde);font-size:1.4rem;font-weight:900;line-height:1;}
 .add-jog-form{display:grid;grid-template-columns:50px 1fr 65px 40px;gap:6px;margin-top:10px;}
 .add-jog-form input{background:var(--card);border:1px solid var(--borda);border-radius:8px;color:var(--branco);padding:10px 8px;font-size:0.88rem;font-family:'Barlow',sans-serif;}
 .add-jog-form input:focus{outline:none;border-color:var(--verde);}
@@ -222,8 +241,8 @@ html,body{height:100%;background:var(--preto);color:var(--branco);font-family:'B
 /* AUTOCOMPLETE */
 .autocomplete-list{position:absolute;left:0;right:0;background:#222;border:1px solid var(--verde);border-radius:0 0 10px 10px;z-index:1000;max-height:180px;overflow-y:auto;display:none;}
 .autocomplete-list.show{display:block;}
-.autocomplete-item{padding:10px 14px;font-size:0.9rem;cursor:pointer;border-bottom:1px solid var(--borda);}
-.autocomplete-item:hover{background:var(--verde-dim);color:var(--verde);}
+.autocomplete-item{padding:10px 14px;font-size:0.9rem;cursor:pointer;border-bottom:1px solid var(--borda);transition:background 0.15s;}
+.autocomplete-item:hover,.autocomplete-item:active{background:var(--verde-dim);}
 .autocomplete-item:last-child{border-bottom:none;}
 
 /* DESTAQUES DA SEMANA */
@@ -925,16 +944,9 @@ async function addTime(){
 async function delTime(i){if(!confirm('Remover time?'))return;D.times.splice(i,1);await salvarDados();renderAll();renderAdmin();}
 
 async function addJog(ti){
-  const num=document.getElementById('jn'+ti).value.trim();
-  const nome=document.getElementById('jm'+ti).value.trim();
-  const pos=document.getElementById('jp'+ti).value.trim();
-  if(!nome)return alert('Nome do jogador!');
-  if(!D.times[ti].jogadores)D.times[ti].jogadores=[];
-  D.times[ti].jogadores.push({num,nome,pos});
-  await salvarDados();renderAll();renderAdmin();
-  document.getElementById('jn'+ti).value='';
-  document.getElementById('jm'+ti).value='';
-  document.getElementById('jp'+ti).value='';
+  // agora o clique na lista já adiciona direto via adicionarJogadorDireto
+  const nome = document.getElementById('jm'+ti).value.trim();
+  if (nome) await adicionarJogadorDireto(String(ti), nome);
 }
 async function delJog(ti,ji){D.times[ti].jogadores.splice(ji,1);await salvarDados();renderAll();renderAdmin();}
 
@@ -962,17 +974,42 @@ function renderAdmin(){
     ?(D.prox).map((p,i)=>`<div class="item-row"><div class="item-row-text"><b>${p.casa} vs ${p.fora}</b><small>${fmtData(p.data)} ${p.hora||''} ${p.local?'— '+p.local:''}</small></div><button class="btn-del" onclick="delProx(${i})">✕</button></div>`).join('')
     :'<p style="color:var(--texto);font-size:0.82rem">Nenhum.</p>';
   document.getElementById('lTimes').innerHTML=(D.times||[]).length
-    ?(D.times).map((t,ti)=>`<div class="time-block"><div class="time-block-head"><span class="time-block-nome">${t.emoji||'⚽'} ${t.nome}</span><button class="btn-del" onclick="delTime(${ti})">✕</button></div><div class="time-block-body">${(t.jogadores||[]).map((j,ji)=>`<div class="jog-mini">${j.foto?`<div class="jogador-row-foto"><img src="${j.foto}"></div>`:`<div class="jogador-row-foto">👤</div>`}<span style="color:var(--verde);font-family:'Bebas Neue';font-size:1rem;width:24px">${j.num||'#'}</span><span style="flex:1;font-size:0.85rem">${j.nome}</span><span style="color:var(--texto);font-size:0.75rem;margin-right:4px">${j.pos||''}</span><button class="btn-edit" style="width:28px;height:28px;font-size:0.75rem;margin-right:2px" onclick="abrirEditJog(${ti},${ji})">✏️</button><button class="btn-del" style="width:28px;height:28px;font-size:0.8rem" onclick="delJog(${ti},${ji})">✕</button></div>`).join('')}<div style="margin-top:10px">
-  <div style="display:grid;grid-template-columns:50px 1fr 65px 40px;gap:6px;position:relative">
-    <input id="jn${ti}" placeholder="#" inputmode="numeric" style="background:var(--card);border:1px solid var(--borda);border-radius:8px;color:var(--branco);padding:10px 8px;font-size:0.88rem;font-family:Barlow,sans-serif">
-    <div style="position:relative">
-      <input id="jm${ti}" placeholder="Nome do atleta" autocomplete="off" oninput="sugerirJogadorTime('jm${ti}','jsug${ti}')" style="width:100%;background:var(--card);border:1px solid var(--borda);border-radius:8px;color:var(--branco);padding:10px 8px;font-size:0.88rem;font-family:Barlow,sans-serif">
-      <div id="jsug${ti}" class="autocomplete-list"></div>
-    </div>
-    <input id="jp${ti}" placeholder="Pos" style="background:var(--card);border:1px solid var(--borda);border-radius:8px;color:var(--branco);padding:10px 8px;font-size:0.88rem;font-family:Barlow,sans-serif">
-    <button class="btn-jog-add" onclick="addJog(${ti})">+</button>
-  </div>
-</div></div></div>`).join('')
+    ?(D.times).map((t,ti)=>{
+    const jogHtml=(t.jogadores||[]).map((j,ji)=>{
+      const posCls=j.pos==='GOL'?'pos-gol':j.pos==='ZAG'?'pos-zag':j.pos==='MEI'?'pos-mei':'pos-ata';
+      const fotoEl=j.foto?`<div class="sug-foto"><img src="${j.foto}"></div>`:`<div class="sug-foto">👤</div>`;
+      return `<div class="jog-mini">${fotoEl}
+        <span style="font-family:'Bebas Neue';font-size:1.1rem;color:var(--verde);width:26px;text-align:center;flex-shrink:0">${j.num||'—'}</span>
+        <div style="flex:1;min-width:0"><div style="font-size:0.88rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${j.nome}</div></div>
+        <span class="sug-pos-tag ${posCls}">${j.pos}</span>
+        <button class="btn-edit" style="width:28px;height:28px;font-size:0.75rem" onclick="abrirEditJog(${ti},${ji})">✏️</button>
+        <button class="btn-del" style="width:28px;height:28px" onclick="delJog(${ti},${ji})">✕</button>
+      </div>`;
+    }).join('');
+    const count=(t.jogadores||[]).length;
+    return `<div class="time-block">
+      <div class="time-block-head">
+        <div style="display:flex;align-items:center">
+          <span class="time-block-nome">${t.emoji||'⚽'} ${t.nome}</span>
+          <span class="time-block-count">${count} jogador${count!==1?'es':''}</span>
+        </div>
+        <button class="btn-del" onclick="delTime(${ti})">✕</button>
+      </div>
+      <div class="time-block-body">
+        ${jogHtml}
+        <div class="add-atleta-area">
+          <div class="add-atleta-label">+ Adicionar jogador</div>
+          <div class="add-atleta-row">
+            <input id="jn${ti}" class="input-num" placeholder="Nº" inputmode="numeric">
+            <div style="flex:1;position:relative">
+              <input id="jm${ti}" class="input-busca" style="width:100%" placeholder="🔍 Buscar atleta..." autocomplete="off" oninput="sugerirJogadorTime('jm${ti}','jsug${ti}')">
+              <div id="jsug${ti}" class="sug-lista"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('')
     :'<p style="color:var(--texto);font-size:0.82rem">Nenhum time.</p>';
   const total=(D.atletas||[]).length;
   document.getElementById('totalAtletas').textContent=total;
@@ -1023,7 +1060,7 @@ function selecionarAtleta(inputId, listId, nome) {
 function sugerirTime(inputId, listId) {
   const val = document.getElementById(inputId).value.toLowerCase().trim();
   const lista = document.getElementById(listId);
-  if (!val || val.length < 1) { lista.classList.remove('show'); return; }
+  if (!val || val.length < 1) { lista.classList.remove('open'); lista.innerHTML=''; return; }
   const matches = (D.times||[]).filter(t => t.nome.toLowerCase().includes(val)).slice(0,7);
   if (!matches.length) { lista.classList.remove('show'); return; }
   lista.innerHTML = matches.map(t => 
@@ -1036,28 +1073,77 @@ function sugerirTime(inputId, listId) {
 function sugerirJogadorTime(inputId, listId) {
   const val = document.getElementById(inputId).value.toLowerCase().trim();
   const lista = document.getElementById(listId);
-  if (!val || val.length < 2) { lista.classList.remove('show'); return; }
-  const matches = (D.atletas||[]).filter(a => a.nome.toLowerCase().includes(val)).slice(0,8);
-  if (!matches.length) { lista.classList.remove('show'); return; }
-  lista.innerHTML = matches.map(a => 
-    `<div class="autocomplete-item" onclick="selecionarJogadorTime('${inputId}','${listId}','${a.nome.replace(/'/g,"\'")}','${a.pos}')">
-      <span class="j-pos ${a.pos==='GOL'?'pos-gol':a.pos==='ZAG'?'pos-zag':a.pos==='MEI'?'pos-mei':'pos-ata'}" style="font-size:0.65rem;padding:2px 6px;margin-right:6px">${a.pos}</span>${a.nome}
-    </div>`
-  ).join('');
-  lista.classList.add('show');
+  if (!val || val.length < 1) { lista.classList.remove('open'); lista.innerHTML=''; return; }
+  const ti = inputId.replace('jm','');
+  // filtra atletas que já estão no time
+  const jogadoresDoTime = (D.times[ti]?.jogadores||[]).map(j=>j.nome.toLowerCase());
+  const matches = (D.atletas||[]).filter(a =>
+    a.nome.toLowerCase().includes(val) && !jogadoresDoTime.includes(a.nome.toLowerCase())
+  ).slice(0,8);
+  if (!matches.length) {
+    lista.innerHTML = `<div class="sug-item" style="color:var(--texto);font-size:0.8rem;justify-content:center;cursor:default">Nenhum atleta disponível</div>`;
+  const inputEl2 = document.getElementById(inputId);
+  if (inputEl2) {
+    const rect2 = inputEl2.getBoundingClientRect();
+    lista.style.top = (rect2.bottom + 4) + 'px';
+    lista.style.left = rect2.left + 'px';
+    lista.style.width = rect2.width + 'px';
+  }
+  lista.classList.add('open');
+  return;
+  }
+  lista.innerHTML = matches.map(a => {
+    const fotoHtml = a.foto
+      ? `<div class="sug-foto"><img src="${a.foto}"></div>`
+      : `<div class="sug-foto">👤</div>`;
+    const idx = (D.atletas||[]).indexOf(a);
+    const posCls = a.pos==='GOL'?'pos-gol':a.pos==='ZAG'?'pos-zag':a.pos==='MEI'?'pos-mei':'pos-ata';
+    return `<div class="sug-item" onclick="adicionarJogadorDireto('${ti}',${idx})">
+      ${fotoHtml}
+      <div class="sug-info">
+        <div class="sug-nome">${a.nome}</div>
+        <span class="sug-pos-tag ${posCls}">${a.pos}</span>
+      </div>
+      <div class="sug-add-icon">+</div>
+    </div>`;
+  }).join('');
+  // posiciona a lista usando fixed com base no input
+  const inputEl = document.getElementById(inputId);
+  if (inputEl) {
+    const rect = inputEl.getBoundingClientRect();
+    lista.style.top = (rect.bottom + 4) + 'px';
+    lista.style.left = rect.left + 'px';
+    lista.style.width = rect.width + 'px';
+  }
+  lista.classList.add('open');
 }
-function selecionarJogadorTime(inputId, listId, nome, pos) {
-  document.getElementById(inputId).value = nome;
-  document.getElementById(listId).classList.remove('show');
-  // preenche posição automaticamente
-  const baseId = inputId.replace('jm','jp');
-  const posEl = document.getElementById(baseId);
-  if (posEl) posEl.value = pos;
+
+async function adicionarJogadorDireto(ti, atlIdx) {
+  const tiNum = parseInt(ti);
+  const atleta = (D.atletas||[])[atlIdx];
+  if (!atleta) return;
+  if (!D.times[tiNum].jogadores) D.times[tiNum].jogadores = [];
+  const nome = atleta.nome;
+  if (D.times[tiNum].jogadores.find(j => j.nome === nome)) return;
+  const num = document.getElementById('jn'+ti)?.value?.trim() || '';
+  D.times[tiNum].jogadores.push({num, nome: atleta.nome, pos: atleta.pos, foto: atleta.foto||''});
+  // limpa campo e fecha lista
+  const input = document.getElementById('jm'+ti);
+  const lista = document.getElementById('jsug'+ti);
+  const hint  = document.getElementById('jog_hint'+ti);
+  if (input) input.value = '';
+  if (lista) lista.classList.remove('show');
+  if (hint) hint.style.display = 'none';
+  document.getElementById('jn'+ti).value = '';
+  await salvarDados();
+  renderAll();
+  renderAdmin();
 }
 // Fechar autocomplete ao clicar fora
 document.addEventListener('click', e => {
-  if (!e.target.closest('.fg')) {
+  if (!e.target.closest('.fg') && !e.target.closest('.sug-lista') && !e.target.closest('.add-atleta-area')) {
     document.querySelectorAll('.autocomplete-list').forEach(l => l.classList.remove('show'));
+    document.querySelectorAll('.sug-lista').forEach(l => l.classList.remove('open'));
   }
 });
 
