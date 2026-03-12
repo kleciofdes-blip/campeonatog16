@@ -260,6 +260,25 @@ html,body{height:100%;background:var(--preto);color:var(--branco);font-family:'B
 .foto-preview img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
 .btn-foto{background:var(--borda2);border:1px solid var(--borda);border-radius:10px;color:var(--branco);padding:10px 14px;font-family:'Barlow Condensed',sans-serif;font-size:0.82rem;cursor:pointer;letter-spacing:1px;}
 .btn-foto:active{background:var(--verde-dim);border-color:var(--verde);}
+
+/* MODAL EDIÇÃO */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:600;align-items:flex-end;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal-box{background:var(--preto2);border-radius:24px 24px 0 0;border:1px solid var(--borda);border-bottom:none;width:100%;max-width:500px;animation:slideUp 0.3s ease;max-height:90vh;display:flex;flex-direction:column;}
+.modal-handle{width:40px;height:4px;background:var(--borda2);border-radius:2px;margin:12px auto 0;flex-shrink:0;}
+.modal-header{display:flex;justify-content:space-between;align-items:center;padding:14px 20px 10px;border-bottom:1px solid var(--borda);flex-shrink:0;}
+.modal-title{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:3px;color:var(--verde);}
+.modal-body{padding:20px;overflow-y:auto;}
+.btn-edit{background:none;border:1px solid var(--borda2);color:var(--texto);width:30px;height:30px;border-radius:7px;font-size:0.8rem;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.btn-edit:active{background:var(--verde-dim);color:var(--verde);border-color:var(--verde);}
+.atleta-item-foto{width:40px;height:40px;border-radius:50%;background:var(--borda2);border:2px solid var(--borda);display:flex;align-items:center;justify-content:center;font-size:1.1rem;overflow:hidden;flex-shrink:0;}
+.atleta-item-foto img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+.foto-upload-center{display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:16px;}
+.foto-upload-circle{width:90px;height:90px;border-radius:50%;background:var(--borda2);border:3px dashed var(--borda);display:flex;align-items:center;justify-content:center;font-size:2.2rem;overflow:hidden;cursor:pointer;transition:border-color 0.2s;}
+.foto-upload-circle:hover{border-color:var(--verde);}
+.foto-upload-circle img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+.jogador-row-foto{width:36px;height:36px;border-radius:50%;background:var(--borda2);border:2px solid var(--borda);display:flex;align-items:center;justify-content:center;font-size:1rem;overflow:hidden;flex-shrink:0;}
+.jogador-row-foto img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
 </style>
 </head>
 <body>
@@ -775,7 +794,10 @@ function filtrarAtletas() {
     const m = posMap[pos];
     html += `<div><div class="grupo-header ${m.cls}-h"><span class="grupo-icone">${m.icone}</span><span class="grupo-titulo ${m.cls}-t">${m.label}</span><span class="grupo-count">${lista.length}</span></div>`;
     lista.sort((a,b)=>a.nome.localeCompare(b.nome)).forEach((a,i) => {
-      html += `<div class="atleta-item"><span class="atleta-num">${i+1}</span><span class="atleta-nome">${a.nome}</span><span class="j-pos ${posCls(pos)}">${pos}</span></div>`;
+      const fotoHtml = a.foto
+        ? `<div class="atleta-item-foto"><img src="${a.foto}"></div>`
+        : `<div class="atleta-item-foto" style="background:var(--borda2);font-size:1rem">👤</div>`;
+      html += `<div class="atleta-item">${fotoHtml}<span class="atleta-nome">${a.nome}</span><span class="j-pos ${posCls(pos)}">${pos}</span></div>`;
     });
     html += '</div>';
   });
@@ -848,6 +870,7 @@ function rTimes() {
       <div class="time-jogadores">
         ${(t.jogadores||[]).length
           ? t.jogadores.map(j=>`<div class="jogador-row">
+              ${j.foto?`<div class="jogador-row-foto"><img src="${j.foto}"></div>`:`<div class="jogador-row-foto">👤</div>`}
               <span class="j-num" style="color:${cor.texto}">${j.num||"—"}</span>
               <span class="j-nome">${j.nome}</span>
               <span class="j-pos ${posCls(j.pos||"")}">${j.pos||""}</span>
@@ -950,7 +973,7 @@ function renderAdmin(){
     ?(D.prox).map((p,i)=>`<div class="item-row"><div class="item-row-text"><b>${p.casa} vs ${p.fora}</b><small>${fmtData(p.data)} ${p.hora||''} ${p.local?'— '+p.local:''}</small></div><button class="btn-del" onclick="delProx(${i})">✕</button></div>`).join('')
     :'<p style="color:var(--texto);font-size:0.82rem">Nenhum.</p>';
   document.getElementById('lTimes').innerHTML=(D.times||[]).length
-    ?(D.times).map((t,ti)=>`<div class="time-block"><div class="time-block-head"><span class="time-block-nome">${t.emoji||'⚽'} ${t.nome}</span><button class="btn-del" onclick="delTime(${ti})">✕</button></div><div class="time-block-body">${(t.jogadores||[]).map((j,ji)=>`<div class="jog-mini"><span style="color:var(--verde);font-family:'Bebas Neue';font-size:1rem;width:24px">${j.num||'#'}</span><span style="flex:1;font-size:0.85rem">${j.nome}</span><span style="color:var(--texto);font-size:0.75rem;margin-right:6px">${j.pos||''}</span><button class="btn-del" style="width:28px;height:28px;font-size:0.8rem" onclick="delJog(${ti},${ji})">✕</button></div>`).join('')}<div style="margin-top:10px">
+    ?(D.times).map((t,ti)=>`<div class="time-block"><div class="time-block-head"><span class="time-block-nome">${t.emoji||'⚽'} ${t.nome}</span><button class="btn-del" onclick="delTime(${ti})">✕</button></div><div class="time-block-body">${(t.jogadores||[]).map((j,ji)=>`<div class="jog-mini">${j.foto?`<div class="jogador-row-foto"><img src="${j.foto}"></div>`:`<div class="jogador-row-foto">👤</div>`}<span style="color:var(--verde);font-family:'Bebas Neue';font-size:1rem;width:24px">${j.num||'#'}</span><span style="flex:1;font-size:0.85rem">${j.nome}</span><span style="color:var(--texto);font-size:0.75rem;margin-right:4px">${j.pos||''}</span><button class="btn-edit" style="width:28px;height:28px;font-size:0.75rem;margin-right:2px" onclick="abrirEditJog(${ti},${ji})">✏️</button><button class="btn-del" style="width:28px;height:28px;font-size:0.8rem" onclick="delJog(${ti},${ji})">✕</button></div>`).join('')}<div style="margin-top:10px">
   <div style="display:grid;grid-template-columns:50px 1fr 65px 40px;gap:6px;position:relative">
     <input id="jn${ti}" placeholder="#" inputmode="numeric" style="background:var(--card);border:1px solid var(--borda);border-radius:8px;color:var(--branco);padding:10px 8px;font-size:0.88rem;font-family:Barlow,sans-serif">
     <div style="position:relative">
@@ -962,7 +985,7 @@ function renderAdmin(){
   </div>
 </div></div></div>`).join('')
     :'<p style="color:var(--texto);font-size:0.82rem">Nenhum time.</p>';
-  const total=( D.atletas||[]).length;
+  const total=(D.atletas||[]).length;
   document.getElementById('totalAtletas').textContent=total;
   const ordem=['GOL','ZAG','MEI','ATA'];
   const labels={GOL:'🧤 Goleiros',ZAG:'🛡️ Zagueiros',MEI:'🎯 Meias',ATA:'⚡ Atacantes'};
@@ -972,7 +995,12 @@ function renderAdmin(){
     if(!grupo.length)return;
     html+=`<p class="sub-label" style="margin-top:10px">${labels[pos]} (${grupo.length})</p>`;
     grupo.sort((a,b)=>a.nome.localeCompare(b.nome)).forEach(a=>{
-      html+=`<div class="item-row"><div class="item-row-text"><b>${a.nome}</b><small>${a.pos}</small></div><button class="btn-del" onclick="delAtleta(${a.i})">✕</button></div>`;
+      const fotoHtml = a.foto
+        ? `<div class="atleta-item-foto"><img src="${a.foto}"></div>`
+        : `<div class="atleta-item-foto">👤</div>`;
+      html+=`<div class="item-row">${fotoHtml}<div class="item-row-text"><b>${a.nome}</b><small>${a.pos}</small></div>
+        <button class="btn-edit" onclick="abrirEditAtleta(${a.i})" title="Editar">✏️</button>
+        <button class="btn-del" onclick="delAtleta(${a.i})">✕</button></div>`;
     });
   });
   document.getElementById('lAtletas').innerHTML=html||'<p style="color:var(--texto);font-size:0.82rem">Nenhum atleta.</p>';
@@ -1119,6 +1147,104 @@ function carregarFormDestaques() {
   });
 }
 
+
+// ── EDIÇÃO ATLETA ──
+function abrirEditAtleta(i) {
+  const a = D.atletas[i];
+  if (!a) return;
+  document.getElementById('edit_atl_idx').value = i;
+  document.getElementById('edit_atl_nome').value = a.nome || '';
+  document.getElementById('edit_atl_pos').value = a.pos || 'GOL';
+  document.getElementById('edit_atl_foto').value = a.foto || '';
+  const prev = document.getElementById('edit_atl_prev');
+  prev.innerHTML = a.foto
+    ? `<img src="${a.foto}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`
+    : '👤';
+  document.getElementById('editAtletaModal').classList.add('open');
+}
+function fecharEditAtleta() {
+  document.getElementById('editAtletaModal').classList.remove('open');
+}
+async function salvarEdicaoAtleta() {
+  const i = parseInt(document.getElementById('edit_atl_idx').value);
+  if (isNaN(i)) return;
+  D.atletas[i] = {
+    nome: document.getElementById('edit_atl_nome').value.trim(),
+    pos:  document.getElementById('edit_atl_pos').value,
+    foto: document.getElementById('edit_atl_foto').value || '',
+  };
+  await salvarDados();
+  renderAll();
+  renderAdmin();
+  fecharEditAtleta();
+}
+function previewFotoEdit(input, prevId, hiddenId) {
+  const file = input.files[0];
+  if (!file) return;
+  // Compress image before storing
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      const MAX = 200;
+      let w = img.width, h = img.height;
+      if (w > h) { if (w > MAX) { h = h * MAX / w; w = MAX; } }
+      else { if (h > MAX) { w = w * MAX / h; h = MAX; } }
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      const data = canvas.toDataURL('image/jpeg', 0.7);
+      document.getElementById(hiddenId).value = data;
+      const prev = document.getElementById(prevId);
+      prev.innerHTML = `<img src="${data}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+// ── EDIÇÃO JOGADOR DO TIME ──
+function abrirEditJog(ti, ji) {
+  const j = D.times[ti]?.jogadores?.[ji];
+  if (!j) return;
+  document.getElementById('edit_jog_ti').value = ti;
+  document.getElementById('edit_jog_ji').value = ji;
+  document.getElementById('edit_jog_num').value = j.num || '';
+  document.getElementById('edit_jog_nome').value = j.nome || '';
+  document.getElementById('edit_jog_pos').value = j.pos || 'GOL';
+  document.getElementById('edit_jog_foto').value = j.foto || '';
+  const prev = document.getElementById('edit_jog_prev');
+  prev.innerHTML = j.foto
+    ? `<img src="${j.foto}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`
+    : '👤';
+  document.getElementById('editJogModal').classList.add('open');
+}
+function fecharEditJog() {
+  document.getElementById('editJogModal').classList.remove('open');
+}
+async function salvarEdicaoJog() {
+  const ti = parseInt(document.getElementById('edit_jog_ti').value);
+  const ji = parseInt(document.getElementById('edit_jog_ji').value);
+  if (isNaN(ti) || isNaN(ji)) return;
+  D.times[ti].jogadores[ji] = {
+    num:  document.getElementById('edit_jog_num').value.trim(),
+    nome: document.getElementById('edit_jog_nome').value.trim(),
+    pos:  document.getElementById('edit_jog_pos').value,
+    foto: document.getElementById('edit_jog_foto').value || '',
+  };
+  await salvarDados();
+  renderAll();
+  renderAdmin();
+  fecharEditJog();
+}
+
+// Fechar modais ao clicar fora
+document.getElementById('editAtletaModal').addEventListener('click', e => {
+  if (e.target === document.getElementById('editAtletaModal')) fecharEditAtleta();
+});
+document.getElementById('editJogModal').addEventListener('click', e => {
+  if (e.target === document.getElementById('editJogModal')) fecharEditJog();
+});
 // ── START ──
 carregarDados();
 </script>
@@ -1173,5 +1299,74 @@ carregarDados();
 ║                                                              ║
 ╚══════════════════════════════════════════════════════════════╝
 -->
+
+<!-- MODAL EDIÇÃO ATLETA -->
+<div class="modal-overlay" id="editAtletaModal">
+  <div class="modal-box">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <span class="modal-title">✏️ EDITAR ATLETA</span>
+      <button class="sheet-close" onclick="fecharEditAtleta()">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="edit_atl_idx">
+      <div class="foto-upload-center">
+        <div class="foto-upload-circle" id="edit_atl_prev" onclick="document.getElementById('edit_atl_file').click()">👤</div>
+        <button class="btn-foto" onclick="document.getElementById('edit_atl_file').click()">📷 Alterar foto</button>
+        <input type="file" id="edit_atl_file" accept="image/*" style="display:none" onchange="previewFotoEdit(this,'edit_atl_prev','edit_atl_foto')">
+        <input type="hidden" id="edit_atl_foto">
+        <div style="font-size:0.72rem;color:var(--texto)">Toque no círculo ou no botão para escolher foto</div>
+      </div>
+      <div class="fg"><label>Nome</label><input id="edit_atl_nome" placeholder="Nome do atleta"></div>
+      <div class="fg">
+        <label>Posição</label>
+        <select id="edit_atl_pos">
+          <option value="GOL">🧤 Goleiro</option>
+          <option value="ZAG">🛡️ Zagueiro</option>
+          <option value="MEI">🎯 Meia</option>
+          <option value="ATA">⚡ Atacante</option>
+        </select>
+      </div>
+      <button class="btn-add" onclick="salvarEdicaoAtleta()">✅ SALVAR ALTERAÇÕES</button>
+      <button onclick="fecharEditAtleta()" style="width:100%;background:none;border:1px solid var(--borda2);color:var(--texto);border-radius:12px;padding:13px;font-family:'Barlow Condensed',sans-serif;font-size:0.9rem;cursor:pointer;margin-top:8px">CANCELAR</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL EDIÇÃO JOGADOR DO TIME -->
+<div class="modal-overlay" id="editJogModal">
+  <div class="modal-box">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <span class="modal-title">✏️ EDITAR JOGADOR</span>
+      <button class="sheet-close" onclick="fecharEditJog()">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="edit_jog_ti">
+      <input type="hidden" id="edit_jog_ji">
+      <div class="foto-upload-center">
+        <div class="foto-upload-circle" id="edit_jog_prev" onclick="document.getElementById('edit_jog_file').click()">👤</div>
+        <button class="btn-foto" onclick="document.getElementById('edit_jog_file').click()">📷 Alterar foto</button>
+        <input type="file" id="edit_jog_file" accept="image/*" style="display:none" onchange="previewFotoEdit(this,'edit_jog_prev','edit_jog_foto')">
+        <input type="hidden" id="edit_jog_foto">
+        <div style="font-size:0.72rem;color:var(--texto)">Toque no círculo ou no botão para escolher foto</div>
+      </div>
+      <div class="fg"><label>Número</label><input id="edit_jog_num" placeholder="#" inputmode="numeric"></div>
+      <div class="fg"><label>Nome</label><input id="edit_jog_nome" placeholder="Nome do jogador"></div>
+      <div class="fg">
+        <label>Posição</label>
+        <select id="edit_jog_pos">
+          <option value="GOL">🧤 Goleiro</option>
+          <option value="ZAG">🛡️ Zagueiro</option>
+          <option value="MEI">🎯 Meia</option>
+          <option value="ATA">⚡ Atacante</option>
+        </select>
+      </div>
+      <button class="btn-add" onclick="salvarEdicaoJog()">✅ SALVAR ALTERAÇÕES</button>
+      <button onclick="fecharEditJog()" style="width:100%;background:none;border:1px solid var(--borda2);color:var(--texto);border-radius:12px;padding:13px;font-family:'Barlow Condensed',sans-serif;font-size:0.9rem;cursor:pointer;margin-top:8px">CANCELAR</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
