@@ -225,6 +225,41 @@ html,body{height:100%;background:var(--preto);color:var(--branco);font-family:'B
 .autocomplete-item{padding:10px 14px;font-size:0.9rem;cursor:pointer;border-bottom:1px solid var(--borda);}
 .autocomplete-item:hover{background:var(--verde-dim);color:var(--verde);}
 .autocomplete-item:last-child{border-bottom:none;}
+
+/* DESTAQUES DA SEMANA */
+.destaques-titulo{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:3px;color:var(--ouro);margin:0 0 12px;display:flex;align-items:center;gap:8px;}
+.destaques-titulo::before{content:'⭐';}
+.destaques-titulo::after{content:'';flex:1;height:1px;background:rgba(255,193,7,0.2);}
+.destaques-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;}
+.destaque-card{background:var(--card);border-radius:14px;border:1px solid var(--borda);padding:14px 12px;display:flex;flex-direction:column;align-items:center;gap:8px;position:relative;overflow:hidden;}
+.destaque-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.destaque-card.artilheiro::before{background:var(--ouro);}
+.destaque-card.goleiro::before{background:var(--azul);}
+.destaque-card.mvp::before{background:var(--verde);}
+.destaque-card.assistencia::before{background:var(--laranja);}
+.destaque-foto{width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid var(--borda2);background:var(--borda2);display:flex;align-items:center;justify-content:center;font-size:1.8rem;flex-shrink:0;}
+.destaque-foto img{width:100%;height:100%;border-radius:50%;object-fit:cover;}
+.destaque-label{font-family:'Barlow Condensed',sans-serif;font-size:0.65rem;letter-spacing:2px;text-transform:uppercase;padding:3px 8px;border-radius:10px;font-weight:700;}
+.destaque-card.artilheiro .destaque-label{background:rgba(255,193,7,0.15);color:var(--ouro);}
+.destaque-card.goleiro .destaque-label{background:rgba(64,196,255,0.15);color:var(--azul);}
+.destaque-card.mvp .destaque-label{background:rgba(0,230,118,0.15);color:var(--verde);}
+.destaque-card.assistencia .destaque-label{background:rgba(255,183,77,0.15);color:var(--laranja);}
+.destaque-nome{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.9rem;text-align:center;line-height:1.2;}
+.destaque-feito{font-size:0.75rem;color:var(--texto);text-align:center;}
+.destaque-vazio{color:var(--texto);font-size:0.75rem;text-align:center;padding:4px 0;}
+
+/* FOTO ATLETA */
+.atleta-foto{width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid var(--borda2);background:var(--borda2);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;overflow:hidden;}
+.atleta-foto img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+.jogador-foto{width:38px;height:38px;border-radius:50%;object-fit:cover;border:2px solid var(--borda2);background:var(--borda2);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;overflow:hidden;}
+.jogador-foto img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+
+/* UPLOAD FOTO */
+.foto-upload-wrap{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.foto-preview{width:56px;height:56px;border-radius:50%;background:var(--borda2);border:2px dashed var(--borda);display:flex;align-items:center;justify-content:center;font-size:1.4rem;overflow:hidden;flex-shrink:0;}
+.foto-preview img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+.btn-foto{background:var(--borda2);border:1px solid var(--borda);border-radius:10px;color:var(--branco);padding:10px 14px;font-family:'Barlow Condensed',sans-serif;font-size:0.82rem;cursor:pointer;letter-spacing:1px;}
+.btn-foto:active{background:var(--verde-dim);border-color:var(--verde);}
 </style>
 </head>
 <body>
@@ -261,6 +296,13 @@ html,body{height:100%;background:var(--preto);color:var(--branco);font-family:'B
 <!-- APP BODY -->
 <div class="app-body" id="appBody">
   <div class="section active" id="s-classif">
+    <div class="destaques-titulo">Destaques da Semana</div>
+    <div class="destaques-grid" id="dashDestaques">
+      <div class="destaque-card artilheiro"><div class="destaque-foto">⚽</div><div class="destaque-label">Artilheiro</div><div class="destaque-vazio">Não definido</div></div>
+      <div class="destaque-card goleiro"><div class="destaque-foto">🧤</div><div class="destaque-label">Goleiro</div><div class="destaque-vazio">Não definido</div></div>
+      <div class="destaque-card mvp"><div class="destaque-foto">⭐</div><div class="destaque-label">MVP</div><div class="destaque-vazio">Não definido</div></div>
+      <div class="destaque-card assistencia"><div class="destaque-foto">🎯</div><div class="destaque-label">+ Assistências</div><div class="destaque-vazio">Não definido</div></div>
+    </div>
     <div class="sec-title">🏆 Classificação</div>
     <div class="classif-wrap">
       <table class="classif-table">
@@ -346,6 +388,7 @@ html,body{height:100%;background:var(--preto);color:var(--branco);font-family:'B
         <button class="a-tab" onclick="mudarATab('at-prox',this)">Próximos</button>
         <button class="a-tab" onclick="mudarATab('at-times',this)">Times</button>
         <button class="a-tab" onclick="mudarATab('at-atletas',this)">Atletas</button>
+        <button class="a-tab" onclick="mudarATab('at-destaques',this)">⭐ Destaques</button>
       </div>
     </div>
     <div class="admin-content">
@@ -441,6 +484,72 @@ html,body{height:100%;background:var(--preto);color:var(--branco);font-family:'B
         <p class="sub-label">Atletas (<span id="totalAtletas">0</span>)</p>
         <div id="lAtletas"></div>
       </div>
+      <div class="a-section" id="at-destaques">
+        <p class="sub-label">⭐ Destaque da Semana</p>
+        <p style="color:var(--texto);font-size:0.8rem;margin-bottom:14px">Defina os 4 destaques que aparecem na página inicial</p>
+
+        <div style="background:var(--borda2);border-radius:12px;padding:14px;margin-bottom:10px">
+          <p class="sub-label" style="margin-top:0;color:var(--ouro)">⚽ Artilheiro da Semana</p>
+          <div class="foto-upload-wrap">
+            <div class="foto-preview" id="prev_art">⚽</div>
+            <div>
+              <div style="font-size:0.75rem;color:var(--texto);margin-bottom:6px">Foto (URL ou base64)</div>
+              <button class="btn-foto" onclick="document.getElementById('foto_art_file').click()">📷 Escolher foto</button>
+              <input type="file" id="foto_art_file" accept="image/*" style="display:none" onchange="previewFoto(this,'prev_art','foto_art')">
+              <input type="hidden" id="foto_art">
+            </div>
+          </div>
+          <div class="fg"><label>Nome</label><input id="dst_art_nome" placeholder="Nome do artilheiro" autocomplete="off" oninput="sugerirAtleta('dst_art_nome','dst_art_sug')"><div id="dst_art_sug" class="autocomplete-list"></div></div>
+          <div class="fg"><label>Feito</label><input id="dst_art_feito" placeholder="ex: 3 gols na rodada"></div>
+        </div>
+
+        <div style="background:var(--borda2);border-radius:12px;padding:14px;margin-bottom:10px">
+          <p class="sub-label" style="margin-top:0;color:var(--azul)">🧤 Goleiro Menos Vazado</p>
+          <div class="foto-upload-wrap">
+            <div class="foto-preview" id="prev_gol">🧤</div>
+            <div>
+              <div style="font-size:0.75rem;color:var(--texto);margin-bottom:6px">Foto</div>
+              <button class="btn-foto" onclick="document.getElementById('foto_gol_file').click()">📷 Escolher foto</button>
+              <input type="file" id="foto_gol_file" accept="image/*" style="display:none" onchange="previewFoto(this,'prev_gol','foto_gol')">
+              <input type="hidden" id="foto_gol">
+            </div>
+          </div>
+          <div class="fg"><label>Nome</label><input id="dst_gol_nome" placeholder="Nome do goleiro" autocomplete="off" oninput="sugerirAtleta('dst_gol_nome','dst_gol_sug')"><div id="dst_gol_sug" class="autocomplete-list"></div></div>
+          <div class="fg"><label>Feito</label><input id="dst_gol_feito" placeholder="ex: 2 jogos sem sofrer gol"></div>
+        </div>
+
+        <div style="background:var(--borda2);border-radius:12px;padding:14px;margin-bottom:10px">
+          <p class="sub-label" style="margin-top:0;color:var(--verde)">⭐ MVP da Semana</p>
+          <div class="foto-upload-wrap">
+            <div class="foto-preview" id="prev_mvp">⭐</div>
+            <div>
+              <div style="font-size:0.75rem;color:var(--texto);margin-bottom:6px">Foto</div>
+              <button class="btn-foto" onclick="document.getElementById('foto_mvp_file').click()">📷 Escolher foto</button>
+              <input type="file" id="foto_mvp_file" accept="image/*" style="display:none" onchange="previewFoto(this,'prev_mvp','foto_mvp')">
+              <input type="hidden" id="foto_mvp">
+            </div>
+          </div>
+          <div class="fg"><label>Nome</label><input id="dst_mvp_nome" placeholder="Nome do MVP" autocomplete="off" oninput="sugerirAtleta('dst_mvp_nome','dst_mvp_sug')"><div id="dst_mvp_sug" class="autocomplete-list"></div></div>
+          <div class="fg"><label>Feito</label><input id="dst_mvp_feito" placeholder="ex: Melhor jogador da rodada"></div>
+        </div>
+
+        <div style="background:var(--borda2);border-radius:12px;padding:14px;margin-bottom:16px">
+          <p class="sub-label" style="margin-top:0;color:var(--laranja)">🎯 Mais Assistências</p>
+          <div class="foto-upload-wrap">
+            <div class="foto-preview" id="prev_ass">🎯</div>
+            <div>
+              <div style="font-size:0.75rem;color:var(--texto);margin-bottom:6px">Foto</div>
+              <button class="btn-foto" onclick="document.getElementById('foto_ass_file').click()">📷 Escolher foto</button>
+              <input type="file" id="foto_ass_file" accept="image/*" style="display:none" onchange="previewFoto(this,'prev_ass','foto_ass')">
+              <input type="hidden" id="foto_ass">
+            </div>
+          </div>
+          <div class="fg"><label>Nome</label><input id="dst_ass_nome" placeholder="Nome do jogador" autocomplete="off" oninput="sugerirAtleta('dst_ass_nome','dst_ass_sug')"><div id="dst_ass_sug" class="autocomplete-list"></div></div>
+          <div class="fg"><label>Feito</label><input id="dst_ass_feito" placeholder="ex: 2 assistências na rodada"></div>
+        </div>
+
+        <button class="btn-add" onclick="salvarDestaques()">⭐ SALVAR DESTAQUES</button>
+      </div>
     </div>
   </div>
 </div>
@@ -462,7 +571,7 @@ const HEADERS = {
 };
 
 const DADOS_VAZIOS = {
-  classif:[], artilh:[], result:[], prox:[], times:[], atletas:[]
+  classif:[], artilh:[], result:[], prox:[], times:[], atletas:[], destaques:{}
 };
 
 let D = JSON.parse(JSON.stringify(DADOS_VAZIOS));
@@ -631,6 +740,11 @@ function verificarSenha() {
   }
 }
 function fecharAdmin() { document.getElementById('adminOverlay').classList.remove('open'); }
+function abrirAdminComDestaques() {
+  document.getElementById('adminOverlay').classList.add('open');
+  renderAdmin();
+  carregarFormDestaques();
+}
 document.getElementById('senhaOverlay').addEventListener('click', e => { if(e.target===document.getElementById('senhaOverlay')) fecharSenha(); });
 document.getElementById('adminOverlay').addEventListener('click', e => { if(e.target===document.getElementById('adminOverlay')) fecharAdmin(); });
 
@@ -671,7 +785,7 @@ function filtrarAtletas() {
 function posCls(p){ return p==='GOL'?'pos-gol':p==='ZAG'?'pos-zag':p==='MEI'?'pos-mei':'pos-ata'; }
 
 // ── RENDER ──
-function renderAll() { rClassif(); rArtilh(); rResult(); rProx(); rTimes(); filtrarAtletas(); }
+function renderAll() { rClassif(); rArtilh(); rResult(); rProx(); rTimes(); filtrarAtletas(); rDestaques(); }
 
 function rClassif() {
   const tb = document.getElementById('tClassif');
@@ -929,6 +1043,81 @@ document.addEventListener('click', e => {
     document.querySelectorAll('.autocomplete-list').forEach(l => l.classList.remove('show'));
   }
 });
+
+
+// ── FOTO UPLOAD ──
+function previewFoto(input, previewId, hiddenId) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const data = e.target.result;
+    document.getElementById(hiddenId).value = data;
+    const prev = document.getElementById(previewId);
+    prev.innerHTML = `<img src="${data}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+  };
+  reader.readAsDataURL(file);
+}
+
+// ── DESTAQUES ──
+function rDestaques() {
+  const dst = D.destaques || {};
+  const tipos = [
+    {key:'art', cls:'artilheiro', icon:'⚽', label:'Artilheiro'},
+    {key:'gol', cls:'goleiro',    icon:'🧤', label:'Goleiro'},
+    {key:'mvp', cls:'mvp',        icon:'⭐', label:'MVP'},
+    {key:'ass', cls:'assistencia',icon:'🎯', label:'+ Assistências'},
+  ];
+  const el = document.getElementById('dashDestaques');
+  if (!el) return;
+  el.innerHTML = tipos.map(t => {
+    const d = dst[t.key];
+    const fotoHtml = d && d.foto
+      ? `<div class="destaque-foto"><img src="${d.foto}" alt="${d.nome||''}"></div>`
+      : `<div class="destaque-foto">${t.icon}</div>`;
+    const body = d && d.nome
+      ? `${fotoHtml}
+         <div class="destaque-label">${t.label}</div>
+         <div class="destaque-nome">${d.nome}</div>
+         <div class="destaque-feito">${d.feito||''}</div>`
+      : `${fotoHtml}
+         <div class="destaque-label">${t.label}</div>
+         <div class="destaque-vazio">Não definido</div>`;
+    return `<div class="destaque-card ${t.cls}">${body}</div>`;
+  }).join('');
+}
+
+async function salvarDestaques() {
+  if (!D.destaques) D.destaques = {};
+  const tipos = ['art','gol','mvp','ass'];
+  tipos.forEach(t => {
+    D.destaques[t] = {
+      nome:  document.getElementById(`dst_${t}_nome`)?.value?.trim() || '',
+      feito: document.getElementById(`dst_${t}_feito`)?.value?.trim() || '',
+      foto:  document.getElementById(`foto_${t}`)?.value || '',
+    };
+  });
+  await salvarDados();
+  rDestaques();
+  alert('✅ Destaques salvos!');
+}
+
+function carregarFormDestaques() {
+  const dst = D.destaques || {};
+  ['art','gol','mvp','ass'].forEach(t => {
+    const d = dst[t] || {};
+    const nomeEl  = document.getElementById(`dst_${t}_nome`);
+    const feitoEl = document.getElementById(`dst_${t}_feito`);
+    const fotoEl  = document.getElementById(`foto_${t}`);
+    const prevEl  = document.getElementById(`prev_${t}`);
+    if (nomeEl)  nomeEl.value  = d.nome  || '';
+    if (feitoEl) feitoEl.value = d.feito || '';
+    if (fotoEl && d.foto) {
+      fotoEl.value = d.foto;
+      if (prevEl) prevEl.innerHTML = `<img src="${d.foto}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+    }
+  });
+}
 
 // ── START ──
 carregarDados();
