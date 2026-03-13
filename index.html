@@ -517,6 +517,41 @@ html,body{height:100%;background:var(--preto);color:var(--branco);font-family:'B
         <div class="fg"><label>Gols</label><input id="ar_gols" type="number" min="0" value="1" inputmode="numeric"></div>
         <button class="btn-add" onclick="addArtilh()">+ ADICIONAR</button>
         <hr class="divider"><p class="sub-label">Artilheiros</p><div id="lArtilh"></div>
+
+        <!-- Assistências -->
+        <hr class="divider">
+        <p class="sub-label" style="color:var(--laranja)">🎯 Assistências</p>
+        <div class="fg" style="position:relative">
+          <label>Jogador</label>
+          <input id="ass_nome" placeholder="Digite o nome..." autocomplete="off" oninput="sugerirAtleta('ass_nome','ass_sug')">
+          <div id="ass_sug" class="autocomplete-list"></div>
+        </div>
+        <div class="fg" style="position:relative">
+          <label>Time</label>
+          <input id="ass_time" placeholder="Digite o time..." autocomplete="off" oninput="sugerirTime('ass_time','ass_tsug')">
+          <div id="ass_tsug" class="autocomplete-list"></div>
+        </div>
+        <div class="fg"><label>Assistências</label><input id="ass_qty" type="number" min="0" value="1" inputmode="numeric"></div>
+        <button class="btn-add" style="background:var(--laranja)" onclick="addAssist()">+ ADICIONAR</button>
+        <div id="lAssist" style="margin-top:10px"></div>
+
+        <!-- Goleiros Menos Vazados -->
+        <hr class="divider">
+        <p class="sub-label" style="color:#40c4ff">🧤 Goleiros Menos Vazados</p>
+        <div class="fg" style="position:relative">
+          <label>Goleiro</label>
+          <input id="gol_nome" placeholder="Digite o nome..." autocomplete="off" oninput="sugerirAtleta('gol_nome','gol_sug')">
+          <div id="gol_sug" class="autocomplete-list"></div>
+        </div>
+        <div class="fg" style="position:relative">
+          <label>Time</label>
+          <input id="gol_time" placeholder="Digite o time..." autocomplete="off" oninput="sugerirTime('gol_time','gol_tsug')">
+          <div id="gol_tsug" class="autocomplete-list"></div>
+        </div>
+        <div class="fg"><label>Gols Sofridos</label><input id="gol_sofridos" type="number" min="0" value="0" inputmode="numeric"></div>
+        <div class="fg"><label>Jogos</label><input id="gol_jogos" type="number" min="1" value="1" inputmode="numeric"></div>
+        <button class="btn-add" style="background:#40c4ff;color:#000" onclick="addGoleiro()">+ ADICIONAR</button>
+        <div id="lGoleiros" style="margin-top:10px"></div>
       </div>
       <div class="a-section" id="at-result">
         <p class="sub-label">Adicionar Resultado</p>
@@ -1282,6 +1317,43 @@ async function addClassif(){
 }
 async function delClassif(i){D.classif.splice(i,1);await salvarDados();renderAll();renderAdmin();}
 
+
+async function addAssist(){
+  const nome=v('ass_nome'); if(!nome) return alert('Digite o nome!');
+  if(!D.assist) D.assist=[];
+  const idx=D.assist.findIndex(a=>a.nome.toLowerCase()===nome.toLowerCase());
+  const obj={nome, time:v('ass_time'), qty:n('ass_qty')||1};
+  idx>=0 ? D.assist[idx]=obj : D.assist.push(obj);
+  await salvarDados(); renderAll(); renderAdmin();
+  clearFields(['ass_nome','ass_time','ass_qty']);
+}
+async function delAssist(i){D.assist.splice(i,1); await salvarDados(); renderAll(); renderAdmin();}
+async function editAssist(i){
+  const a=D.assist[i]; if(!a) return;
+  document.getElementById('ass_nome').value=a.nome;
+  document.getElementById('ass_time').value=a.time||'';
+  document.getElementById('ass_qty').value=a.qty||1;
+  D.assist.splice(i,1); renderAdmin();
+}
+
+async function addGoleiro(){
+  const nome=v('gol_nome'); if(!nome) return alert('Digite o nome!');
+  if(!D.goleiros) D.goleiros=[];
+  const idx=D.goleiros.findIndex(g=>g.nome.toLowerCase()===nome.toLowerCase());
+  const obj={nome, time:v('gol_time'), sofridos:n('gol_sofridos')||0, jogos:n('gol_jogos')||1};
+  idx>=0 ? D.goleiros[idx]=obj : D.goleiros.push(obj);
+  await salvarDados(); renderAll(); renderAdmin();
+  clearFields(['gol_nome','gol_time','gol_sofridos','gol_jogos']);
+}
+async function delGoleiro(i){D.goleiros.splice(i,1); await salvarDados(); renderAll(); renderAdmin();}
+async function editGoleiro(i){
+  const g=D.goleiros[i]; if(!g) return;
+  document.getElementById('gol_nome').value=g.nome;
+  document.getElementById('gol_time').value=g.time||'';
+  document.getElementById('gol_sofridos').value=g.sofridos||0;
+  document.getElementById('gol_jogos').value=g.jogos||1;
+  D.goleiros.splice(i,1); renderAdmin();
+}
 async function addArtilh(){
   const nome=v('ar_nome');if(!nome)return alert('Digite o nome!');
   if(!D.artilh)D.artilh=[];
@@ -1292,6 +1364,13 @@ async function addArtilh(){
   clearFields(['ar_nome','ar_time','ar_gols']);
 }
 async function delArtilh(i){D.artilh.splice(i,1);await salvarDados();renderAll();renderAdmin();}
+async function editArtilh(i){
+  const a=D.artilh[i]; if(!a) return;
+  document.getElementById('ar_nome').value=a.nome;
+  document.getElementById('ar_time').value=a.time||'';
+  document.getElementById('ar_gols').value=a.gols||1;
+  D.artilh.splice(i,1); renderAdmin();
+}
 
 async function addResult(){
   const casa=v('re_casa'),fora=v('re_fora');if(!casa||!fora)return alert('Preencha os times!');
@@ -1349,7 +1428,15 @@ function renderAdmin(){
     ?(D.classif).map((t,i)=>`<div class="item-row"><div class="item-row-text"><b>${t.emoji||'⚽'} ${t.nome}</b><small>V:${t.v} E:${t.e} D:${t.d} | GP:${t.gp} GC:${t.gc}</small></div><button class="btn-del" onclick="delClassif(${i})">✕</button></div>`).join('')
     :'<p style="color:var(--texto);font-size:0.82rem">Nenhum.</p>';
   document.getElementById('lArtilh').innerHTML=(D.artilh||[]).length
-    ?[...D.artilh].sort((a,b)=>b.gols-a.gols).map((a,_)=>{const i=D.artilh.indexOf(a);return`<div class="item-row"><div class="item-row-text"><b>${a.nome}</b><small>${a.time||''} — ${a.gols} gols</small></div><button class="btn-del" onclick="delArtilh(${i})">✕</button></div>`;}).join('')
+    ?[...D.artilh].sort((a,b)=>b.gols-a.gols).map((a,_)=>{const i=D.artilh.indexOf(a);return`<div class="item-row"><div class="item-row-text"><b>${a.nome}</b><small>${a.time||''} — ${a.gols} gols</small></div><div style="display:flex;gap:6px"><button class="btn-edit" onclick="editArtilh(${i})">✏️</button><button class="btn-del" onclick="delArtilh(${i})">✕</button></div></div>`;}).join('')
+    :'<p style="color:var(--texto);font-size:0.82rem">Nenhum.</p>';
+  const lAssist = document.getElementById('lAssist');
+  if(lAssist) lAssist.innerHTML=(D.assist||[]).length
+    ?[...D.assist].sort((a,b)=>b.qty-a.qty).map((a,_)=>{const i=D.assist.indexOf(a);return`<div class="item-row"><div class="item-row-text"><b>${a.nome}</b><small>${a.time||''} — ${a.qty} assist.</small></div><div style="display:flex;gap:6px"><button class="btn-edit" onclick="editAssist(${i})">✏️</button><button class="btn-del" onclick="delAssist(${i})">✕</button></div></div>`;}).join('')
+    :'<p style="color:var(--texto);font-size:0.82rem">Nenhuma.</p>';
+  const lGoleiros = document.getElementById('lGoleiros');
+  if(lGoleiros) lGoleiros.innerHTML=(D.goleiros||[]).length
+    ?[...D.goleiros].sort((a,b)=>a.sofridos-b.sofridos).map((g,_)=>{const i=D.goleiros.indexOf(g);return`<div class="item-row"><div class="item-row-text"><b>${g.nome}</b><small>${g.time||''} — ${g.sofridos} sofridos · ${g.jogos||1} jogo${g.jogos!==1?'s':''}</small></div><div style="display:flex;gap:6px"><button class="btn-edit" onclick="editGoleiro(${i})">✏️</button><button class="btn-del" onclick="delGoleiro(${i})">✕</button></div></div>`;}).join('')
     :'<p style="color:var(--texto);font-size:0.82rem">Nenhum.</p>';
   document.getElementById('lResult').innerHTML=(D.result||[]).length
     ?[...D.result].reverse().map((r,_)=>{const i=D.result.indexOf(r);return`<div class="item-row"><div class="item-row-text"><b>${r.casa} ${r.gc}×${r.gf} ${r.fora}</b><small>${fmtData(r.data)} ${r.rod||''}</small></div><button class="btn-del" onclick="delResult(${i})">✕</button></div>`;}).join('')
